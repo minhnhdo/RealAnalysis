@@ -3,6 +3,17 @@ structure Rational where
   denominator : Nat
   denominator_not_zero : denominator ≠ 0
 
+instance : OfNat Rational n where
+  ofNat := ⟨n, 1, by decide⟩
+
+instance : Neg Rational where
+  neg q := ⟨-q.numerator, q.denominator, q.denominator_not_zero⟩
+
+instance : ToString Rational where
+  toString q := toString q.numerator ++ " /. " ++ toString q.denominator
+
+#eval ([1, -1, 3] : List Rational)
+
 @[simp]
 def equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
@@ -30,14 +41,3 @@ theorem equivalent_relation_trans : ∀ p q r, equivalent_relation p q → equiv
   have q_denom_nz : (q.denominator : Int) ≠ 0 := by apply rational_denominator_int_not_zero
   apply (Int.mul_eq_mul_left_iff q_denom_nz).mp
   rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
-
-instance : OfNat Rational n where
-  ofNat := ⟨n, 1, by decide⟩
-
-instance : Neg Rational where
-  neg q := ⟨-q.numerator, q.denominator, q.denominator_not_zero⟩
-
-instance : ToString Rational where
-  toString q := toString q.numerator ++ " /. " ++ toString q.denominator
-
-#eval ([1, -1, 3] : List Rational)
