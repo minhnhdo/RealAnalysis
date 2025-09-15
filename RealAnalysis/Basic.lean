@@ -20,6 +20,7 @@ instance : ToString Rational where
 @[simp]
 def equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
+  deriving Decidable
 
 theorem rational_denominator_int_not_zero {q : Rational} : (q.denominator : Int) ≠ 0 := by
     apply Int.ofNat_ne_zero.mpr
