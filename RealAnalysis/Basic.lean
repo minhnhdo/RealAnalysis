@@ -13,7 +13,7 @@ instance : Neg Rational where
   neg q := ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
 
 instance : ToString Rational where
-  toString q := toString q.numerator ++ " /. " ++ toString q.denominator
+  toString q := s!"{q.numerator}/{q.denominator}"
 
 #eval ([1, -1, 3] : List Rational)
 
