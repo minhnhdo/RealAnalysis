@@ -1,0 +1,10 @@
+name = "RealAnalysis"
+version = "0.1.0"
+defaultTargets = ["realanalysis"]
+
+[[lean_lib]]
+name = "RealAnalysis"
+
+[[lean_exe]]
+name = "realanalysis"
+root = "Main"
