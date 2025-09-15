@@ -22,7 +22,7 @@ def equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
-theorem rational_denominator_int_not_zero {q : Rational} : (q.denominator : Int) ≠ 0 := by
+theorem rational_denominator_int_ne_zero {q : Rational} : (q.denominator : Int) ≠ 0 := by
     apply Int.ofNat_ne_zero.mpr
     exact q.denominator_ne_zero
 
@@ -39,6 +39,6 @@ theorem equivalent_relation_symm : ∀ p q, equivalent_relation p q → equivale
 theorem equivalent_relation_trans : ∀ p q r, equivalent_relation p q → equivalent_relation q r → equivalent_relation p r := by
   intros p q r h_pq_equiv h_qr_equiv
   simp at *
-  have q_denom_ne_zero : (q.denominator : Int) ≠ 0 := by apply rational_denominator_int_not_zero
+  have q_denom_ne_zero : (q.denominator : Int) ≠ 0 := by apply rational_denominator_int_ne_zero
   apply (Int.mul_eq_mul_left_iff q_denom_ne_zero).mp
   rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
