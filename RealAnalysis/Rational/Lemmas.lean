@@ -1,24 +1,4 @@
-structure Rational where
-  numerator : Int
-  denominator : Nat
-  denominator_ne_zero : denominator ≠ 0
-
-instance : Inhabited Rational where
-  default := ⟨0, 1, by decide⟩
-
-instance : OfNat Rational n where
-  ofNat := ⟨n, 1, by decide⟩
-
-instance : Neg Rational where
-  neg q := ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
-
-instance : ToString Rational where
-  toString q := s!"{q.numerator}/{q.denominator}"
-
-@[simp]
-def equivalent_relation (p q : Rational) : Prop :=
-  p.numerator * q.denominator = p.denominator * q.numerator
-  deriving Decidable
+import RealAnalysis.Rational.Basic
 
 theorem rational_denominator_int_ne_zero (q : Rational) : (q.denominator : Int) ≠ 0 := by
     apply Int.ofNat_ne_zero.mpr
@@ -39,22 +19,6 @@ theorem equivalent_relation_trans : ∀ p q r, equivalent_relation p q → equiv
   simp at *
   apply (Int.mul_eq_mul_left_iff (rational_denominator_int_ne_zero q)).mp
   rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
-
-def Rational.addNumerator (p q : Rational) : Int :=
-  p.numerator * q.denominator + p.denominator * q.numerator
-
-def Rational.addDenominator (p q : Rational) : Nat :=
-  p.denominator * q.denominator
-
-def Rational.add (p q : Rational) : Rational :=
-  let prf : p.denominator * q.denominator ≠ 0 := by
-    apply Nat.mul_ne_zero
-    exact p.denominator_ne_zero
-    exact q.denominator_ne_zero
-  ⟨p.addNumerator q, p.addDenominator q, prf⟩
-
-instance : Add Rational where
-  add := Rational.add
 
 theorem add_well_defined : ∀ p q r s,
   equivalent_relation p q → equivalent_relation r s → equivalent_relation (p + r) (q + s) := by
