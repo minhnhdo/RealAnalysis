@@ -15,14 +15,12 @@ instance : Neg Rational where
 instance : ToString Rational where
   toString q := s!"{q.numerator}/{q.denominator}"
 
-#eval ([1, -1, 3] : List Rational)
-
 @[simp]
 def equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
-theorem rational_denominator_int_ne_zero {q : Rational} : (q.denominator : Int) ≠ 0 := by
+theorem rational_denominator_int_ne_zero (q : Rational) : (q.denominator : Int) ≠ 0 := by
     apply Int.ofNat_ne_zero.mpr
     exact q.denominator_ne_zero
 
@@ -39,8 +37,7 @@ theorem equivalent_relation_symm : ∀ p q, equivalent_relation p q → equivale
 theorem equivalent_relation_trans : ∀ p q r, equivalent_relation p q → equivalent_relation q r → equivalent_relation p r := by
   intros p q r h_pq_equiv h_qr_equiv
   simp at *
-  have q_denom_ne_zero : (q.denominator : Int) ≠ 0 := by apply rational_denominator_int_ne_zero
-  apply (Int.mul_eq_mul_left_iff q_denom_ne_zero).mp
+  apply (Int.mul_eq_mul_left_iff (rational_denominator_int_ne_zero q)).mp
   rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
 
 def Rational.addNumerator (p q : Rational) : Int :=
@@ -71,8 +68,8 @@ theorem add_well_defined : ∀ p q r s,
       repeat rw [Int.mul_assoc]
       repeat rw [Int.mul_comm r.denominator]
       repeat rw [←Int.mul_assoc]
-      apply (Int.mul_eq_mul_right_iff (@rational_denominator_int_ne_zero r)).mpr
-      apply (Int.mul_eq_mul_right_iff (@rational_denominator_int_ne_zero s)).mpr
+      apply (Int.mul_eq_mul_right_iff (rational_denominator_int_ne_zero r)).mpr
+      apply (Int.mul_eq_mul_right_iff (rational_denominator_int_ne_zero s)).mpr
       assumption
     have rs_mul_pq_denom : p.denominator * r.numerator * (q.denominator * s.denominator) =
                             p.denominator * r.denominator * (q.denominator * s.numerator) := by
@@ -81,7 +78,7 @@ theorem add_well_defined : ∀ p q r s,
       repeat rw [Int.mul_assoc]
       repeat rw [Int.mul_comm p.denominator]
       repeat rw [←Int.mul_assoc]
-      apply (Int.mul_eq_mul_right_iff (@rational_denominator_int_ne_zero p)).mpr
-      apply (Int.mul_eq_mul_right_iff (@rational_denominator_int_ne_zero q)).mpr
+      apply (Int.mul_eq_mul_right_iff (rational_denominator_int_ne_zero p)).mpr
+      apply (Int.mul_eq_mul_right_iff (rational_denominator_int_ne_zero q)).mpr
       assumption
     rw [pq_mul_rs_denom, Int.add_right_inj, rs_mul_pq_denom]
