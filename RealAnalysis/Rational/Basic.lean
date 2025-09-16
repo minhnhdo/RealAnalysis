@@ -16,7 +16,7 @@ instance : ToString Rational where
   toString q := s!"{q.numerator}/{q.denominator}"
 
 @[simp]
-def equivalent_relation (p q : Rational) : Prop :=
+def Rational.equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
