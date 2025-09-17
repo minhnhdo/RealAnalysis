@@ -35,3 +35,20 @@ protected def Rational.add (p q : Rational) : Rational :=
 
 instance : Add Rational where
   add := Rational.add
+
+protected def Rational.sub (p q : Rational) : Rational :=
+  p + (-q)
+
+instance : Sub Rational where
+  sub := Rational.sub
+
+def Rational.isPositive (p : Rational) : Prop :=
+  p.denominator * p.numerator > 0
+  deriving Decidable
+
+protected def Rational.lt : Rational → Rational → Prop
+  | p, q => (q - p).isPositive
+  deriving Decidable
+
+instance : LT Rational where
+  lt := Rational.lt
