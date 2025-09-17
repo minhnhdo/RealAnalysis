@@ -16,17 +16,17 @@ instance : ToString Rational where
   toString q := s!"{q.numerator}/{q.denominator}"
 
 @[simp]
-def Rational.equivalent_relation (p q : Rational) : Prop :=
+protected def Rational.equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
-def Rational.addNumerator (p q : Rational) : Int :=
+protected def Rational.addNumerator (p q : Rational) : Int :=
   p.numerator * q.denominator + p.denominator * q.numerator
 
-def Rational.addDenominator (p q : Rational) : Nat :=
+protected def Rational.addDenominator (p q : Rational) : Nat :=
   p.denominator * q.denominator
 
-def Rational.add (p q : Rational) : Rational :=
+protected def Rational.add (p q : Rational) : Rational :=
   let prf : p.denominator * q.denominator ≠ 0 := by
     apply Nat.mul_ne_zero
     exact p.denominator_ne_zero
