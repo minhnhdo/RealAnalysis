@@ -77,6 +77,10 @@ theorem Rational.isPositive_well_defined
         rw [Nat.pos_iff_ne_zero]
         exact p.denominator_ne_zero
 
+theorem Rational.neg_numerator (p : Rational) : (-p).numerator = -(p.numerator) := by rfl
+
+theorem Rational.neg_denominator (p : Rational) : (-p).denominator = p.denominator := by rfl
+
 theorem Rational.sub_well_defined
   (p q r s : Rational)
   (h_pq_equiv : p.equivalent_relation q)
@@ -85,11 +89,47 @@ theorem Rational.sub_well_defined
     simp at *
     simp [HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
     simp [Rational.addNumerator, Rational.addDenominator] at *
-    rw [Int.add_mul, Int.mul_add]
-    repeat rw [Int.mul_assoc]
-    repeat rw [Int.mul_comm (-r).denominator]
-    rw [Int.mul_comm (-r).numerator]
-    sorry
+    repeat rw [Rational.neg_denominator, Rational.neg_numerator]
+    rw [Int.mul_neg p.denominator, Int.mul_neg q.denominator]
+    calc (p.numerator * ↑r.denominator + -(↑p.denominator * r.numerator)) * (↑q.denominator * ↑s.denominator)
+      _ = p.numerator * r.denominator * (q.denominator * s.denominator) +
+          -(p.denominator * r.numerator) * (q.denominator * s.denominator) := by rw [Int.add_mul]
+      _ = p.numerator * (q.denominator * s.denominator) * r.denominator +
+          -(p.denominator * r.numerator) * (q.denominator * s.denominator) := by rw [Int.mul_right_comm]
+      _ = p.numerator * q.denominator * s.denominator * r.denominator +
+          -(p.denominator * r.numerator) * (q.denominator * s.denominator) := by rw [← Int.mul_assoc]
+      _ = p.numerator * q.denominator * s.denominator * r.denominator +
+          -(p.denominator * r.numerator * (q.denominator * s.denominator)) := by rw [Int.neg_mul]
+      _ = p.numerator * q.denominator * s.denominator * r.denominator +
+          -(p.denominator * (q.denominator * s.denominator) * r.numerator) := by rw [Int.mul_right_comm p.denominator]
+      _ = p.numerator * q.denominator * s.denominator * r.denominator +
+          -(p.denominator * q.denominator * s.denominator * r.numerator) := by rw [← Int.mul_assoc]
+      _ = p.denominator * q.numerator * s.denominator * r.denominator +
+          -(p.denominator * q.denominator * s.denominator * r.numerator) := by rw [h_pq_equiv]
+      _ = p.denominator * (q.numerator * s.denominator) * r.denominator +
+          -(p.denominator * q.denominator * s.denominator * r.numerator) := by rw [← Int.mul_assoc]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * q.denominator * s.denominator * r.numerator) := by rw [Int.mul_right_comm]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * q.denominator * (s.denominator * r.numerator)) := by rw [Int.mul_assoc (p.denominator * q.denominator)]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * q.denominator * (r.numerator * s.denominator)) := by rw [Int.mul_comm s.denominator]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * q.denominator * (r.denominator * s.numerator)) := by rw [h_rs_equiv]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * q.denominator * r.denominator * s.numerator) := by rw [← Int.mul_assoc (p.denominator * q.denominator)]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * (q.denominator * r.denominator) * s.numerator) := by rw [← Int.mul_assoc p.denominator]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * (r.denominator * q.denominator) * s.numerator) := by rw [Int.mul_comm q.denominator]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * r.denominator * q.denominator * s.numerator) := by rw [← Int.mul_assoc p.denominator]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          -(p.denominator * r.denominator * (q.denominator * s.numerator)) := by rw [Int.mul_assoc (p.denominator * r.denominator )]
+      _ = p.denominator * r.denominator * (q.numerator * s.denominator) +
+          p.denominator * r.denominator * -(q.denominator * s.numerator) := by rw [Int.mul_neg]
+      _ = p.denominator * r.denominator *
+        ((q.numerator * s.denominator) + -(q.denominator * s.numerator)) := by rw [Int.mul_add]
 
 theorem Rational.lt_well_defined
   (p q r s: Rational)
