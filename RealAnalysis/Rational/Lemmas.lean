@@ -76,3 +76,15 @@ theorem Rational.isPositive_well_defined
       . simp
         rw [Nat.pos_iff_ne_zero]
         exact p.denominator_ne_zero
+
+theorem Rational.lt_well_defined
+  (p q r s: Rational)
+  (h_pq_equiv : p.equivalent_relation q)
+  (h_rs_equiv : r.equivalent_relation s)
+  (h_p_lt_r : p < r)
+  : q < s := by
+    simp at *
+    simp [LT.lt] at *
+    simp [Rational.lt, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
+    simp [Rational.addNumerator, Rational.addDenominator] at *
+    sorry

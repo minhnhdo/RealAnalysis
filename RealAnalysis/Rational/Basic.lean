@@ -9,8 +9,11 @@ instance : Inhabited Rational where
 instance : OfNat Rational n where
   ofNat := ⟨n, 1, by decide⟩
 
+protected def Rational.neg (q : Rational) : Rational :=
+  ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
+
 instance : Neg Rational where
-  neg q := ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
+  neg := Rational.neg
 
 instance : ToString Rational where
   toString q := s!"{q.numerator}/{q.denominator}"
