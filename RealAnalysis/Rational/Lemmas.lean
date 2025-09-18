@@ -45,3 +45,34 @@ theorem Rational.add_well_defined
       apply (Int.mul_eq_mul_right_iff (Rational.denominator_int_ne_zero q)).mpr
       assumption
     rw [pq_mul_rs_denom, rs_mul_pq_denom]
+
+theorem Rational.isPositive_well_defined
+  (p q : Rational)
+  (h_pq_equiv : p.equivalent_relation q)
+  (h_p_isPositive : p.isPositive)
+  : q.isPositive := by
+    simp at *
+    apply @Int.pos_of_mul_pos_left (q.numerator * q.denominator) (p.denominator * p.denominator)
+    . calc
+        0 < p.numerator * p.denominator * q.denominator * q.denominator := by
+          apply Int.mul_pos
+          . apply Int.mul_pos h_p_isPositive
+            simp
+            rw [Nat.pos_iff_ne_zero]
+            exact q.denominator_ne_zero
+          . simp
+            rw [Nat.pos_iff_ne_zero]
+            exact q.denominator_ne_zero
+        _ = p.denominator * p.numerator * q.denominator * q.denominator := by rw [Int.mul_comm p.numerator]
+        _ = p.denominator * (p.numerator * q.denominator) * q.denominator := by rw [Int.mul_assoc p.denominator]
+        _ = p.denominator * (p.denominator * q.numerator) * q.denominator := by rw [h_pq_equiv]
+        _ = q.numerator * q.denominator * (p.denominator * p.denominator) := by
+          rw [Int.mul_assoc p.denominator, Int.mul_comm, Int.mul_assoc p.denominator, Int.mul_comm p.denominator]
+          rw [Int.mul_assoc (q.numerator * q.denominator)]
+    . apply Int.mul_pos
+      . simp
+        rw [Nat.pos_iff_ne_zero]
+        exact p.denominator_ne_zero
+      . simp
+        rw [Nat.pos_iff_ne_zero]
+        exact p.denominator_ne_zero
