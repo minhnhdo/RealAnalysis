@@ -14,7 +14,7 @@ theorem Rational.equivalent_relation_symm (p q : Rational) (h_pq_equiv : p.equiv
 
 theorem Rational.equivalent_relation_trans (p q r : Rational) (h_pq_equiv : p.equivalent_relation q) (h_qr_equiv : q.equivalent_relation r) : p.equivalent_relation r := by
   simp at *
-  apply (Int.mul_eq_mul_left_iff (Rational.denominator_int_ne_zero q)).mp
+  apply (Int.mul_eq_mul_left_iff q.denominator_int_ne_zero).mp
   rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
 
 theorem Rational.add_well_defined
@@ -31,8 +31,8 @@ theorem Rational.add_well_defined
       repeat rw [Int.mul_assoc]
       repeat rw [Int.mul_comm r.denominator]
       repeat rw [←Int.mul_assoc]
-      apply (Int.mul_eq_mul_right_iff (Rational.denominator_int_ne_zero r)).mpr
-      apply (Int.mul_eq_mul_right_iff (Rational.denominator_int_ne_zero s)).mpr
+      apply (Int.mul_eq_mul_right_iff r.denominator_int_ne_zero).mpr
+      apply (Int.mul_eq_mul_right_iff s.denominator_int_ne_zero).mpr
       assumption
     have rs_mul_pq_denom : p.denominator * r.numerator * (q.denominator * s.denominator) =
                             p.denominator * r.denominator * (q.denominator * s.numerator) := by
@@ -41,8 +41,8 @@ theorem Rational.add_well_defined
       repeat rw [Int.mul_assoc]
       repeat rw [Int.mul_comm p.denominator]
       repeat rw [←Int.mul_assoc]
-      apply (Int.mul_eq_mul_right_iff (Rational.denominator_int_ne_zero p)).mpr
-      apply (Int.mul_eq_mul_right_iff (Rational.denominator_int_ne_zero q)).mpr
+      apply (Int.mul_eq_mul_right_iff p.denominator_int_ne_zero).mpr
+      apply (Int.mul_eq_mul_right_iff q.denominator_int_ne_zero).mpr
       assumption
     rw [pq_mul_rs_denom, rs_mul_pq_denom]
 
