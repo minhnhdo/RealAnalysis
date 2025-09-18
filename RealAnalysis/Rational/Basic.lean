@@ -45,7 +45,6 @@ protected def Rational.sub (p q : Rational) : Rational :=
 instance : Sub Rational where
   sub := Rational.sub
 
-@[simp]
 def Rational.isPositive (p : Rational) : Prop :=
   0 < p.numerator * p.denominator
   deriving Decidable
