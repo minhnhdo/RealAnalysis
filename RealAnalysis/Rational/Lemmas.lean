@@ -178,9 +178,46 @@ theorem Rational.lt_trans
     simp [Rational.addNumerator, Rational.addDenominator] at *
     rw [Rational.neg_numerator, Rational.neg_denominator] at *
     apply Int.mul_pos
-    . apply @Int.pos_of_mul_pos_left (r.numerator * p.denominator + r.denominator * -p.numerator) q.denominator
-      . rw [Int.add_mul, Int.mul_right_comm, Int.mul_assoc, Int.mul_assoc]
-        sorry
+    . apply @Int.pos_of_mul_pos_right q.denominator
+      . have h₁ : 0 < q.denominator * r.numerator * p.denominator + (-q.numerator) * r.denominator * p.denominator := by
+          rw [Int.mul_comm (-q.numerator), ← Int.add_mul, Int.mul_comm q.denominator]
+          apply Int.mul_pos
+          . apply @Int.pos_of_mul_pos_left _ ((r.denominator : Int) * q.denominator)
+            . assumption
+            . apply Int.mul_pos
+              . exact r.zero_lt_denominator
+              . exact q.zero_lt_denominator
+          . exact p.zero_lt_denominator
+        have h₂ : 0 < q.numerator * r.denominator * p.denominator + q.denominator * r.denominator * (-p.numerator) := by
+          rw [Int.mul_right_comm, Int.mul_right_comm q.denominator, ← Int.add_mul]
+          apply Int.mul_pos
+          . apply @Int.pos_of_mul_pos_left _ ((q.denominator : Int) * p.denominator)
+            . assumption
+            . apply Int.mul_pos
+              . exact q.zero_lt_denominator
+              . exact p.zero_lt_denominator
+          . exact r.zero_lt_denominator
+        calc
+          0 < q.denominator * r.numerator * p.denominator + (-q.numerator) * r.denominator * p.denominator +
+              (q.numerator * r.denominator * p.denominator + q.denominator * r.denominator * (-p.numerator)) := by apply Int.add_pos h₁ h₂
+          _ = q.denominator * r.numerator * p.denominator + (-q.numerator) * r.denominator * p.denominator +
+              (q.denominator * r.denominator * (-p.numerator) + q.numerator * r.denominator * p.denominator) := by rw [Int.add_comm (q.numerator * _ * _)]
+          _ = q.denominator * r.numerator * p.denominator + ((-q.numerator) * r.denominator * p.denominator +
+              (q.denominator * r.denominator * (-p.numerator) + q.numerator * r.denominator * p.denominator)) := by rw [Int.add_assoc]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) +
+              ((-q.numerator) * r.denominator * p.denominator + q.numerator * r.denominator * p.denominator)) := by rw [← Int.add_left_comm (q.denominator * _ * _)]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) +
+              ((-q.numerator) * (r.denominator * p.denominator) + q.numerator * r.denominator * p.denominator)) := by rw [← Int.mul_assoc (-q.numerator)]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) +
+              ((-q.numerator) * (r.denominator * p.denominator) + q.numerator * (r.denominator * p.denominator))) := by rw [← Int.mul_assoc q.numerator]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) +
+              ((-q.numerator + q.numerator) * (r.denominator * p.denominator))) := by rw [Int.add_mul]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) +
+              (0 * (r.denominator * p.denominator))) := by rw [Int.add_left_neg]
+          _ = q.denominator * r.numerator * p.denominator + (q.denominator * r.denominator * (-p.numerator) + 0) := by rw [Int.zero_mul]
+          _ = q.denominator * r.numerator * p.denominator + q.denominator * r.denominator * (-p.numerator) := by rw [Int.add_zero]
+          _ = q.denominator * (r.numerator * p.denominator) + q.denominator * (r.denominator * (-p.numerator)) := by repeat rw [Int.mul_assoc]
+          _ = q.denominator * (r.numerator * p.denominator + r.denominator * (-p.numerator)) := by rw [Int.mul_add]
       . exact q.zero_lt_denominator
     . apply Int.mul_pos
       . exact r.zero_lt_denominator
