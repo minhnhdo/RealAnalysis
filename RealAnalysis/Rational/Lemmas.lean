@@ -4,6 +4,11 @@ theorem Rational.denominator_int_ne_zero (q : Rational) : (q.denominator : Int) 
     apply Int.ofNat_ne_zero.mpr
     exact q.denominator_ne_zero
 
+theorem Rational.zero_lt_denominator (p : Rational): 0 < (p.denominator : Int) := by
+  simp
+  rw [Nat.pos_iff_ne_zero]
+  exact p.denominator_ne_zero
+
 theorem Rational.equivalent_relation_refl (p : Rational) : p.equivalent_relation p := by
   simp
   rw [Int.mul_comm]
@@ -140,5 +145,25 @@ theorem Rational.lt_well_defined
     simp at *
     simp [LT.lt] at *
     simp [Rational.lt, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
-    simp [Rational.addNumerator, Rational.addDenominator] at *
-    sorry
+    simp [Rational.addNumerator, Rational.addDenominator, Rational.isPositive] at *
+    rw [Rational.neg_numerator, Rational.neg_denominator] at *
+    apply Int.mul_pos
+    . apply @Int.pos_of_mul_pos_left (s.numerator * q.denominator + s.denominator * -q.numerator) p.denominator
+      . apply @Int.pos_of_mul_pos_right r.denominator
+        . rw [Int.add_mul, Int.mul_assoc s.denominator, Int.mul_comm (-q.numerator), Int.mul_neg, ← h_pq_equiv]
+          rw [← Int.neg_mul, Int.mul_assoc, Int.mul_comm q.denominator, ← Int.mul_assoc, ← Int.mul_assoc]
+          rw [← Int.add_mul, ← Int.mul_assoc, Int.mul_add, ← Int.mul_assoc, ← Int.mul_assoc, ← h_rs_equiv]
+          rw [Int.mul_comm r.numerator, Int.mul_comm r.denominator, Int.mul_assoc, Int.mul_assoc, ← Int.mul_add]
+          apply Int.mul_pos
+          . apply Int.mul_pos
+            . exact s.zero_lt_denominator
+            . apply Int.pos_of_mul_pos_left h_p_lt_r
+              apply Int.mul_pos
+              . exact r.zero_lt_denominator
+              . exact p.zero_lt_denominator
+          . exact q.zero_lt_denominator
+        . exact r.zero_lt_denominator
+      . exact p.zero_lt_denominator
+    . apply Int.mul_pos
+      . exact s.zero_lt_denominator
+      . exact q.zero_lt_denominator
