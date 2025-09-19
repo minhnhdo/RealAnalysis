@@ -167,3 +167,21 @@ theorem Rational.lt_well_defined
     . apply Int.mul_pos
       . exact s.zero_lt_denominator
       . exact q.zero_lt_denominator
+
+theorem Rational.lt_trans
+  (p q r : Rational)
+  (h_p_lt_q : p < q)
+  (h_q_lt_r : q < r)
+  : p < r := by
+    simp [LT.lt, Rational.lt] at *
+    simp [Rational.isPositive, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
+    simp [Rational.addNumerator, Rational.addDenominator] at *
+    rw [Rational.neg_numerator, Rational.neg_denominator] at *
+    apply Int.mul_pos
+    . apply @Int.pos_of_mul_pos_left (r.numerator * p.denominator + r.denominator * -p.numerator) q.denominator
+      . rw [Int.add_mul, Int.mul_right_comm, Int.mul_assoc, Int.mul_assoc]
+        sorry
+      . exact q.zero_lt_denominator
+    . apply Int.mul_pos
+      . exact r.zero_lt_denominator
+      . exact p.zero_lt_denominator
