@@ -209,7 +209,29 @@ theorem Rational.lt_trichotomy (p q : Rational) : p < q ∨ p ≈ q ∨ q < p :=
   simp [LT.lt, Rational.lt, HasEquiv.Equiv]
   simp [Rational.isPositive, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add]
   simp [Rational.addNumerator, Rational.addDenominator, Rational.neg_denominator, Rational.neg_numerator]
-  cases Int.lt_trichotomy 0 ((q.numerator * p.denominator + q.denominator * -p.numerator) * (q.denominator * p.denominator))
-  . left
+  match Int.lt_trichotomy 0 ((q.numerator * p.denominator + q.denominator * -p.numerator) * (q.denominator * p.denominator)) with
+  | .inl _ =>
+    left
     assumption
-  . sorry
+  | .inr (.inl prf) =>
+    right
+    left
+    symm
+    rw [Int.mul_comm, Int.mul_comm p.numerator, ← Int.sub_eq_zero, Int.sub_eq_add_neg, ← Int.neg_mul, Int.neg_mul_comm]
+    symm at prf
+    rw [Int.mul_eq_zero] at prf
+    match prf with
+    | .inl _ =>
+      assumption
+    | .inr prf =>
+      have ne_prf : (q.denominator : Int) * p.denominator ≠ 0 := by
+        apply Int.mul_ne_zero
+        . exact q.denominator_int_ne_zero
+        . exact p.denominator_int_ne_zero
+      contradiction
+  | .inr (.inr _) =>
+    right
+    right
+    rw [← Int.neg_lt_zero_iff, ← Int.neg_mul, Int.mul_comm p.denominator q.denominator, Int.add_comm, Int.neg_add]
+    rw [← Int.neg_mul, Int.neg_mul_neg, ← Int.neg_mul, Int.mul_comm p.denominator, Int.mul_comm (-p.numerator)]
+    assumption
