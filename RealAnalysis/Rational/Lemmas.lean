@@ -9,26 +9,26 @@ theorem Rational.zero_lt_denominator (p : Rational): 0 < (p.denominator : Int) :
   rw [Nat.pos_iff_ne_zero]
   exact p.denominator_ne_zero
 
-theorem Rational.equivalent_relation_refl (p : Rational) : p.equivalent_relation p := by
-  simp
+theorem Rational.equivalent_relation_refl (p : Rational) : p ≈ p := by
+  simp [HasEquiv.Equiv]
   rw [Int.mul_comm]
 
-theorem Rational.equivalent_relation_symm (p q : Rational) (h_pq_equiv : p.equivalent_relation q) : q.equivalent_relation p := by
-  simp at *
+theorem Rational.equivalent_relation_symm (p q : Rational) (h_pq_equiv : p ≈ q) : q ≈ p := by
+  simp [HasEquiv.Equiv] at *
   rw [Int.mul_comm q.numerator p.denominator, Int.mul_comm q.denominator p.numerator, h_pq_equiv]
 
-theorem Rational.equivalent_relation_trans (p q r : Rational) (h_pq_equiv : p.equivalent_relation q) (h_qr_equiv : q.equivalent_relation r) : p.equivalent_relation r := by
-  simp at *
+theorem Rational.equivalent_relation_trans (p q r : Rational) (h_pq_equiv : p ≈ q) (h_qr_equiv : q ≈ r) : p ≈ r := by
+  simp [HasEquiv.Equiv] at *
   apply (Int.mul_eq_mul_left_iff q.denominator_int_ne_zero).mp
-  rw [←Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ←Int.mul_left_comm]
+  rw [← Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ← Int.mul_left_comm]
 
-theorem Rational.add_well_defined
-  (p q r s : Rational)
-  (h_pq_equiv : p.equivalent_relation q)
-  (h_rs_equiv : r.equivalent_relation s) :
-  (p + r).equivalent_relation (q + s) := by
-    simp at *
-    simp [HAdd.hAdd, Add.add, Rational.add, Rational.addDenominator]
+instance : Equivalence Rational.equivalent_relation where
+  refl := Rational.equivalent_relation_refl
+  symm {p} {q} := Rational.equivalent_relation_symm p q
+  trans {p} {q} {r} := Rational.equivalent_relation_trans p q r
+
+theorem Rational.add_well_defined (p q r s : Rational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) : (p + r) ≈ (q + s) := by
+    simp [HasEquiv.Equiv, HAdd.hAdd, Add.add, Rational.add, Rational.addDenominator]
     simp [Rational.addNumerator] -- this has to come after so that we don't unfold `@Add.add Int`
     rw [Int.mul_add, Int.add_mul]
     have pq_mul_rs_denom : p.numerator * r.denominator * (q.denominator * s.denominator) =
@@ -51,12 +51,8 @@ theorem Rational.add_well_defined
       assumption
     rw [pq_mul_rs_denom, rs_mul_pq_denom]
 
-theorem Rational.isPositive_well_defined
-  (p q : Rational)
-  (h_pq_equiv : p.equivalent_relation q)
-  (h_p_isPositive : p.isPositive)
-  : q.isPositive := by
-    simp at *
+theorem Rational.isPositive_well_defined (p q : Rational) (h_pq_equiv : p ≈ q) (h_p_isPositive : p.isPositive) : q.isPositive := by
+    simp [HasEquiv.Equiv] at *
     apply @Int.pos_of_mul_pos_left (q.numerator * q.denominator) (p.denominator * p.denominator)
     . calc
         0 < p.numerator * p.denominator * q.denominator * q.denominator := by
@@ -86,12 +82,8 @@ theorem Rational.neg_numerator (p : Rational) : (-p).numerator = -(p.numerator) 
 
 theorem Rational.neg_denominator (p : Rational) : (-p).denominator = p.denominator := by rfl
 
-theorem Rational.sub_well_defined
-  (p q r s : Rational)
-  (h_pq_equiv : p.equivalent_relation q)
-  (h_rs_equiv : r.equivalent_relation s)
-  : (p - r).equivalent_relation (q - s) := by
-    simp at *
+theorem Rational.sub_well_defined (p q r s : Rational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) : (p - r) ≈ (q - s) := by
+    simp [HasEquiv.Equiv] at *
     simp [HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
     simp [Rational.addNumerator, Rational.addDenominator] at *
     repeat rw [Rational.neg_denominator, Rational.neg_numerator]
@@ -136,14 +128,8 @@ theorem Rational.sub_well_defined
       _ = p.denominator * r.denominator *
         ((q.numerator * s.denominator) + -(q.denominator * s.numerator)) := by rw [Int.mul_add]
 
-theorem Rational.lt_well_defined
-  (p q r s: Rational)
-  (h_pq_equiv : p.equivalent_relation q)
-  (h_rs_equiv : r.equivalent_relation s)
-  (h_p_lt_r : p < r)
-  : q < s := by
-    simp at *
-    simp [LT.lt] at *
+theorem Rational.lt_well_defined (p q r s: Rational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) (h_p_lt_r : p < r) : q < s := by
+    simp [HasEquiv.Equiv, LT.lt] at *
     simp [Rational.lt, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
     simp [Rational.addNumerator, Rational.addDenominator, Rational.isPositive] at *
     rw [Rational.neg_numerator, Rational.neg_denominator] at *
@@ -219,8 +205,8 @@ theorem Rational.lt_trans (p q r : Rational) (h_p_lt_q : p < q) (h_q_lt_r : q < 
       . exact r.zero_lt_denominator
       . exact p.zero_lt_denominator
 
-theorem Rational.lt_trichotomy (p q : Rational) : p < q ∨ p.equivalent_relation q ∨ q < p := by
-  simp [LT.lt, Rational.lt]
+theorem Rational.lt_trichotomy (p q : Rational) : p < q ∨ p ≈ q ∨ q < p := by
+  simp [LT.lt, Rational.lt, HasEquiv.Equiv]
   simp [Rational.isPositive, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add]
   simp [Rational.addNumerator, Rational.addDenominator, Rational.neg_denominator, Rational.neg_numerator]
   cases Int.lt_trichotomy 0 ((q.numerator * p.denominator + q.denominator * -p.numerator) * (q.denominator * p.denominator))

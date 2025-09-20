@@ -23,6 +23,8 @@ protected def Rational.equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
+instance : HasEquiv Rational := ⟨Rational.equivalent_relation⟩
+
 protected def Rational.addNumerator (p q : Rational) : Int :=
   p.numerator * q.denominator + p.denominator * q.numerator
 
