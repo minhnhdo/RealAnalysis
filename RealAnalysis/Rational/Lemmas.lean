@@ -168,11 +168,7 @@ theorem Rational.lt_well_defined
       . exact s.zero_lt_denominator
       . exact q.zero_lt_denominator
 
-theorem Rational.lt_trans
-  (p q r : Rational)
-  (h_p_lt_q : p < q)
-  (h_q_lt_r : q < r)
-  : p < r := by
+theorem Rational.lt_trans (p q r : Rational) (h_p_lt_q : p < q) (h_q_lt_r : q < r) : p < r := by
     simp [LT.lt, Rational.lt] at *
     simp [Rational.isPositive, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add] at *
     simp [Rational.addNumerator, Rational.addDenominator] at *
@@ -222,3 +218,12 @@ theorem Rational.lt_trans
     . apply Int.mul_pos
       . exact r.zero_lt_denominator
       . exact p.zero_lt_denominator
+
+theorem Rational.lt_trichotomy (p q : Rational) : p < q ∨ p.equivalent_relation q ∨ q < p := by
+  simp [LT.lt, Rational.lt]
+  simp [Rational.isPositive, HSub.hSub, Sub.sub, Rational.sub, HAdd.hAdd, Add.add, Rational.add]
+  simp [Rational.addNumerator, Rational.addDenominator, Rational.neg_denominator, Rational.neg_numerator]
+  cases Int.lt_trichotomy 0 ((q.numerator * p.denominator + q.denominator * -p.numerator) * (q.denominator * p.denominator))
+  . left
+    assumption
+  . sorry
