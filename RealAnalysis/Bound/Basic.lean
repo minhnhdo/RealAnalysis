@@ -20,5 +20,5 @@ example : Bound.sup (Finset.cons 2
   use 2
   intros _ _ _ h_x_lt_lub h_x_is_ub
   simp [BoundedAbove] at *
-  apply Rat.not_lt.mpr h_x_is_ub.left
-  exact h_x_lt_lub
+  have not_x_lt_lub := Rat.not_lt.mpr h_x_is_ub.left
+  contradiction
