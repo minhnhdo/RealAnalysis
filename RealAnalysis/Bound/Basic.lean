@@ -4,21 +4,21 @@ import Mathlib.Data.Set.Basic
 
 def BoundedAbove {t} [LE t] (subset : Set t) (upperBound : t) := ∀ x, x ∈ subset → x ≤ upperBound
 
-def Bound.sup {t} [LT t] [LE t] (subset : Set t) :=
-  ∃ ub, BoundedAbove subset ub → ∀ x, x ∈ subset → x < ub → ¬BoundedAbove subset x
+def Bound.Sup {t} [LT t] [LE t] (subset : Set t) :=
+  ∃ ub, BoundedAbove subset ub → ∀ x, x < ub → ¬BoundedAbove subset x
 
 def BoundedBelow {t} [LE t] (subset : Set t) (lowerBound : t) := ∀ x, x ∈ subset → lowerBound ≤ x
 
-def Bound.inf {t} [LT t] [LE t] (subset : Set t) :=
-  ∃ lb, BoundedBelow subset lb → ∀ x, x ∈ subset → lb < x → ¬BoundedBelow subset x
+def Bound.Inf {t} [LT t] [LE t] (subset : Set t) :=
+  ∃ lb, BoundedBelow subset lb → ∀ x, lb < x → ¬BoundedBelow subset x
 
-example : Bound.sup (Finset.cons 2
+example : Bound.Sup (Finset.cons 2
                       ((Finset.cons 1
                         (Finset.cons (mkRat 1 2) Finset.empty (by decide))
                         (by decide)))
                       (by decide)).toSet := by
   use 2
-  intros _ _ _ h_x_lt_lub h_x_is_ub
+  intros _ _ h_x_lt_lub h_x_is_ub
   simp [BoundedAbove] at *
   have not_x_lt_lub := Rat.not_lt.mpr h_x_is_ub.left
   contradiction
