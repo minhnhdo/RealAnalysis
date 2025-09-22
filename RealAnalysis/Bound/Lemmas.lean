@@ -58,3 +58,15 @@ theorem Set.lt_Sup
     have h_lub_le_b := h_lub.right b h_ub
     have h_not_lub_le_b := LT.lt.not_ge h_lt
     contradiction
+
+theorem Set.subset_imp_Sup_le
+  (s₁ s₂ : Set ℚ) (lub₁ lub₂ : ℚ)
+  (h_lub₁ : s₁.Sup lub₁) (h_lub₂ : s₂.Sup lub₂) (h_subset : s₁ ⊆ s₂)
+  : lub₁ ≤ lub₂ := by
+    simp [Set.Sup] at *
+    have s₁_bounded_by_lub₂ : s₁.BoundedAbove lub₂ := by
+      intro _ h_x_in_s₁
+      apply h_lub₂.left
+      apply h_subset
+      assumption
+    exact h_lub₁.right lub₂ s₁_bounded_by_lub₂
