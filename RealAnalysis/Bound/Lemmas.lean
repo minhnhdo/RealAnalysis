@@ -50,3 +50,11 @@ theorem Set.lt_Sup_le
     intro h_lt
     apply h_lub.right
     exact subset.lt_BoundedAbove b h_lt
+
+theorem Set.lt_Sup
+  (subset : Set ℚ) (b lub : ℚ) (h_lub : subset.Sup lub) (h_lt : b < lub)
+  : ¬subset.BoundedAbove b := by
+    intro h_ub
+    have h_lub_le_b := h_lub.right b h_ub
+    have h_not_lub_le_b := LT.lt.not_ge h_lt
+    contradiction
