@@ -4,7 +4,7 @@ import Mathlib.Data.Set.Basic
 import RealAnalysis.Bound.Basic
 
 theorem Set.BoundedAbove_trans
-  (subset : Set ℚ) (ub₁ : ℚ) (ub₂ : ℚ)
+  (subset : Set ℚ) (ub₁ ub₂ : ℚ)
   (h_ub₁ : subset.BoundedAbove ub₁)
   (h_ub₁_le_ub₂ : ub₁ ≤ ub₂)
   : subset.BoundedAbove ub₂ := by
@@ -15,7 +15,7 @@ theorem Set.BoundedAbove_trans
     assumption
 
 theorem Set.Sup_le_ub_iff
-  (subset : Set ℚ) (lub : ℚ) (ub : ℚ)
+  (subset : Set ℚ) (lub ub : ℚ)
   (h_lub : subset.Sup lub)
   :  lub ≤ ub ↔ subset.BoundedAbove ub := by
     apply Iff.intro
@@ -23,3 +23,16 @@ theorem Set.Sup_le_ub_iff
     · intro h_ub
       simp [Set.Sup] at *
       exact h_lub.right ub h_ub
+
+theorem Set.Sup_le_bound_iff
+  (subset : Set ℚ) (lub b : ℚ) (h_lub : subset.Sup lub)
+  : (∀ x, x ∈ subset → x ≤ b) ↔ lub ≤ b := by
+    simp [Set.Sup] at *
+    apply Iff.intro
+    · intro h_b
+      apply h_lub.right
+      assumption
+    · intros h_lub_le_b
+      apply subset.BoundedAbove_trans lub b
+      · exact h_lub.left
+      · assumption
