@@ -1,14 +1,17 @@
+import Mathlib.Algebra.Order.Ring.Unbundled.Rat
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Rat.Init
 import Mathlib.Data.Set.Basic
 
-def Set.BoundedAbove (s : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ s → x ≤ upperBound
+def Set.BoundedAbove {t} [Preorder t] (s : Set t) (upperBound : t) := ∀ x, x ∈ s → x ≤ upperBound
 
-def Set.Sup (s : Set ℚ) (lub : ℚ) := s.BoundedAbove lub ∧ ∀ ub, s.BoundedAbove ub → lub ≤ ub
+def Set.Sup {t} [Preorder t] (s : Set t) (lub : t) :=
+  s.BoundedAbove lub ∧ ∀ ub, s.BoundedAbove ub → lub ≤ ub
 
-def Set.BoundedBelow (s : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ s → lowerBound ≤ x
+def Set.BoundedBelow {t} [Preorder t] (s : Set t) (lowerBound : t) := ∀ x, x ∈ s → lowerBound ≤ x
 
-def Set.Inf (s : Set ℚ) (glb : ℚ) := s.BoundedBelow glb ∧ ∀ lb, s.BoundedBelow lb → glb ≤ lb
+def Set.Inf {t} [Preorder t] (s : Set t) (glb : t) :=
+  s.BoundedBelow glb ∧ ∀ lb, s.BoundedBelow lb → glb ≤ lb
 
 example : (Finset.cons 2
             ((Finset.cons 1
