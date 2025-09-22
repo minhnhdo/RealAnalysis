@@ -17,7 +17,9 @@ theorem Set.BoundedAbove_trans
 theorem Set.Sup_le_ub_iff
   (subset : Set ℚ) (lub : ℚ) (ub : ℚ)
   (h_lub : subset.Sup lub)
-  : subset.BoundedAbove ub ↔ lub ≤ ub := by
+  :  lub ≤ ub ↔ subset.BoundedAbove ub := by
     apply Iff.intro
-    · sorry
     · exact subset.BoundedAbove_trans lub ub h_lub.left
+    · intro h_ub
+      simp [Set.Sup] at *
+      exact h_lub.right ub h_ub
