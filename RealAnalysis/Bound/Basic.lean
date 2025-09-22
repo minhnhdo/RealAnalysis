@@ -3,15 +3,19 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Rat.Init
 import Mathlib.Data.Set.Basic
 
-def BoundedAbove (subset : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ subset → x ≤ upperBound
+namespace Bound
 
-def Bound.Sup (subset : Set ℚ) (lub : ℚ) :=
-  BoundedAbove subset lub ∧ ∀ x, x < lub → ¬BoundedAbove subset x
+def Above (subset : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ subset → x ≤ upperBound
 
-def BoundedBelow (subset : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ subset → lowerBound ≤ x
+def Sup (subset : Set ℚ) (lub : ℚ) :=
+  Above subset lub ∧ ∀ x, x < lub → ¬Above subset x
 
-def Bound.Inf (subset : Set ℚ) (lb : ℚ) :=
-  BoundedBelow subset lb ∧ ∀ x, lb < x → ¬BoundedBelow subset x
+def Below (subset : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ subset → lowerBound ≤ x
+
+def Inf (subset : Set ℚ) (glb : ℚ) :=
+  Below subset glb ∧ ∀ x, glb < x → ¬Below subset x
+
+end Bound
 
 example : Bound.Sup (Finset.cons 2
                       ((Finset.cons 1
@@ -20,19 +24,19 @@ example : Bound.Sup (Finset.cons 2
                       (by decide)).toSet 2 := by
   simp [Bound.Sup] at *
   apply And.intro
-  · simp [BoundedAbove] at *
+  · simp [Bound.Above] at *
     decide
   · intros x h_x_lt_lub h_x_is_ub
-    simp [BoundedAbove] at *
+    simp [Bound.Above] at *
     have not_x_lt_lub := Rat.not_lt.mpr h_x_is_ub.left
     contradiction
 
-theorem BoundedAbove_trans
+theorem Bound.Above_trans
   (subset : Set ℚ) (ub₁ : ℚ) (ub₂ : ℚ)
-  (h_ub₁ : BoundedAbove subset ub₁)
+  (h_ub₁ : Bound.Above subset ub₁)
   (h_ub₁_le_ub₂ : ub₁ ≤ ub₂)
-  : BoundedAbove subset ub₂ := by
-    simp [BoundedAbove] at *
+  : Bound.Above subset ub₂ := by
+    simp [Bound.Above] at *
     intros x h_x_in_subset
     have h_x_le_ub₁ := h_ub₁ x h_x_in_subset
     apply le_trans h_x_le_ub₁
@@ -41,9 +45,9 @@ theorem BoundedAbove_trans
 theorem Bound.lub_le_ub_iff
   (subset : Set ℚ) (lub : ℚ) (ub : ℚ)
   (h_lub : Bound.Sup subset lub)
-  : BoundedAbove subset ub ↔ lub ≤ ub := by
+  : Bound.Above subset ub ↔ lub ≤ ub := by
     simp [Bound.Sup] at *
     apply Iff.intro
     · sorry
     · intro h_lub_le_ub
-      exact BoundedAbove_trans subset lub ub h_lub.left h_lub_le_ub
+      exact Bound.Above_trans subset lub ub h_lub.left h_lub_le_ub
