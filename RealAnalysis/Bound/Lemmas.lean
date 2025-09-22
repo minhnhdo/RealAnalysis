@@ -37,9 +37,16 @@ theorem Set.Sup_le_bound_iff
       · exact h_lub.left
       · assumption
 
-theorem Set.BoundedAbove_lt
+theorem Set.lt_BoundedAbove
   (subset : Set ℚ) (b : ℚ)
   : (∀ x, x ∈ subset → x < b) → subset.BoundedAbove b := by
     intros h_lt x h_x_in_subset
     apply Rat.le_of_lt
     exact h_lt x h_x_in_subset
+
+theorem Set.lt_Sup_le
+  (subset : Set ℚ) (lub b : ℚ) (h_lub : subset.Sup lub)
+  : (∀ x, x ∈ subset → x < b) → lub ≤ b := by
+    intro h_lt
+    apply h_lub.right
+    exact subset.lt_BoundedAbove b h_lt
