@@ -2,14 +2,14 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Rat.Init
 import Mathlib.Data.Set.Basic
 
-def BoundedAbove {t} [LE t] (subset : Set t) (upperBound : t) := ∀ x, x ∈ subset → x ≤ upperBound
+def BoundedAbove (subset : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ subset → x ≤ upperBound
 
-def Bound.Sup {t} [LT t] [LE t] (subset : Set t) (ub : t) :=
+def Bound.Sup (subset : Set ℚ) (ub : ℚ) :=
   BoundedAbove subset ub → ∀ x, x < ub → ¬BoundedAbove subset x
 
-def BoundedBelow {t} [LE t] (subset : Set t) (lowerBound : t) := ∀ x, x ∈ subset → lowerBound ≤ x
+def BoundedBelow (subset : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ subset → lowerBound ≤ x
 
-def Bound.Inf {t} [LT t] [LE t] (subset : Set t) (lb : t) :=
+def Bound.Inf (subset : Set ℚ) (lb : ℚ) :=
   BoundedBelow subset lb → ∀ x, lb < x → ¬BoundedBelow subset x
 
 example : Bound.Sup (Finset.cons 2
