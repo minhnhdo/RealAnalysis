@@ -2,30 +2,20 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Rat.Init
 import Mathlib.Data.Set.Basic
 
-namespace Bound
+def Set.BoundedAbove (subset : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ subset → x ≤ upperBound
 
-def Above (subset : Set ℚ) (upperBound : ℚ) := ∀ x, x ∈ subset → x ≤ upperBound
+def Set.Sup (subset : Set ℚ) (lub : ℚ) :=
+  subset.BoundedAbove lub ∧ ∀ x, x < lub → ¬subset.BoundedAbove x
 
-def Sup (subset : Set ℚ) (lub : ℚ) :=
-  Above subset lub ∧ ∀ x, x < lub → ¬Above subset x
+def Set.BoundedBelow (subset : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ subset → lowerBound ≤ x
 
-def Below (subset : Set ℚ) (lowerBound : ℚ) := ∀ x, x ∈ subset → lowerBound ≤ x
+def Set.Inf (subset : Set ℚ) (glb : ℚ) :=
+  subset.BoundedBelow glb ∧ ∀ x, glb < x → ¬subset.BoundedBelow x
 
-def Inf (subset : Set ℚ) (glb : ℚ) :=
-  Below subset glb ∧ ∀ x, glb < x → ¬Below subset x
-
-end Bound
-
-example : Bound.Sup (Finset.cons 2
-                      ((Finset.cons 1
-                        (Finset.cons (mkRat 1 2) Finset.empty (by decide))
-                        (by decide)))
-                      (by decide)).toSet 2 := by
-  simp [Bound.Sup] at *
-  apply And.intro
-  · simp [Bound.Above] at *
-    decide
-  · intros x h_x_lt_lub h_x_is_ub
-    simp [Bound.Above] at *
-    have not_x_lt_lub := Rat.not_lt.mpr h_x_is_ub.left
-    contradiction
+example : (Finset.cons 2
+            ((Finset.cons 1
+              (Finset.cons (mkRat 1 2) Finset.empty (by decide))
+                (by decide)))
+              (by decide)).toSet.BoundedAbove 2 := by
+  simp [Set.BoundedAbove] at *
+  decide
