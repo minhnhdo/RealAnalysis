@@ -6,7 +6,7 @@ structure Rational where
 instance : Inhabited Rational where
   default := ⟨0, 1, by decide⟩
 
-instance : OfNat Rational n where
+instance {n} : OfNat Rational n where
   ofNat := ⟨n, 1, by decide⟩
 
 protected def Rational.neg (q : Rational) : Rational :=
