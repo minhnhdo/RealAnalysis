@@ -22,10 +22,14 @@ theorem Rational.equivalent_relation_trans (p q r : Rational) (h_pq_equiv : p �
   apply (Int.mul_eq_mul_left_iff q.denominator_int_ne_zero).mp
   rw [← Int.mul_assoc, Int.mul_comm q.denominator, h_pq_equiv, Int.mul_assoc, h_qr_equiv, ← Int.mul_left_comm]
 
-instance : Equivalence Rational.equivalent_relation where
+instance instEquivalenceRational : Equivalence Rational.equivalent_relation where
   refl := Rational.equivalent_relation_refl
   symm {p} {q} := Rational.equivalent_relation_symm p q
   trans {p} {q} {r} := Rational.equivalent_relation_trans p q r
+
+instance : Setoid Rational where
+  r := Rational.equivalent_relation
+  iseqv := instEquivalenceRational
 
 theorem Rational.add_well_defined (p q r s : Rational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) : (p + r) ≈ (q + s) := by
     simp [HasEquiv.Equiv, HAdd.hAdd, Add.add, Rational.add, Rational.addDenominator]
