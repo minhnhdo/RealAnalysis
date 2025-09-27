@@ -31,6 +31,14 @@ instance PreRational.instSetoid : Setoid PreRational where
   r := PreRational.equivalent_relation
   iseqv := PreRational.instEquivalence
 
+theorem PreRational.neg_numerator (p : PreRational) : (-p).numerator = -(p.numerator) := by rfl
+
+theorem PreRational.neg_denominator (p : PreRational) : (-p).denominator = p.denominator := by rfl
+
+theorem PreRational.neg_well_defined (p q : PreRational) (h_pq_equiv : p ≈ q) : -p ≈ -q := by
+  simp [HasEquiv.Equiv, PreRational.neg_numerator, PreRational.neg_denominator] at *
+  rw [Int.mul_neg, Int.neg_mul, Int.neg_eq_comm, Int.neg_neg, h_pq_equiv]
+
 theorem PreRational.add_well_defined (p q r s : PreRational) (h_pr_equiv : p ≈ r) (h_qs_equiv : q ≈ s) : (p + q) ≈ (r + s) := by
     simp [HasEquiv.Equiv, HAdd.hAdd, Add.add, PreRational.add, PreRational.addDenominator]
     simp [PreRational.addNumerator] -- this has to come after so that we don't unfold `@Add.add Int`
@@ -81,10 +89,6 @@ theorem PreRational.isPositive_well_defined (p q : PreRational) (h_pq_equiv : p 
       . simp
         rw [Nat.pos_iff_ne_zero]
         exact p.denominator_ne_zero
-
-theorem PreRational.neg_numerator (p : PreRational) : (-p).numerator = -(p.numerator) := by rfl
-
-theorem PreRational.neg_denominator (p : PreRational) : (-p).denominator = p.denominator := by rfl
 
 theorem PreRational.sub_well_defined (p q r s : PreRational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) : (p - r) ≈ (q - s) := by
     simp [HasEquiv.Equiv] at *

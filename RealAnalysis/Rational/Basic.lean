@@ -3,14 +3,27 @@ import RealAnalysis.Rational.Pre.Lemmas
 
 def Rational := Quotient (PreRational.instSetoid)
 
+def Rational.negAux (p : PreRational) : Rational := Quotient.mk' (PreRational.neg p)
+
+theorem Rational.negAux_lift (p q : PreRational) : p ≈ q → Rational.negAux p = Rational.negAux q := by
+  intro
+  apply Quotient.sound
+  apply PreRational.neg_well_defined
+  assumption
+
+def Rational.neg (p : Rational) : Rational := Quotient.lift Rational.negAux Rational.negAux_lift p
+
+instance : Neg Rational := ⟨Rational.neg⟩
+
 def Rational.addAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.add p q)
 
-theorem Rational.addAux_lift
-  (p q r s : PreRational)
-  (h_pr_equiv : p ≈ r)
-  (h_qs_equiv : q ≈ s)
-  : Rational.addAux p q = Rational.addAux r s := by
-    apply Quotient.sound
-    exact PreRational.add_well_defined p q r s h_pr_equiv h_qs_equiv
+theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r →  q ≈ s → Rational.addAux p q = Rational.addAux r s := by
+  intros
+  apply Quotient.sound
+  apply PreRational.add_well_defined
+  . assumption
+  . assumption
 
 def Rational.add (p q : Rational) : Rational := Quotient.lift₂ Rational.addAux Rational.addAux_lift p q
+
+instance : Add Rational := ⟨Rational.add⟩
