@@ -21,7 +21,7 @@ instance : Neg Rational := ⟨Rational.neg⟩
 
 def Rational.addAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.add p q)
 
-theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r →  q ≈ s → Rational.addAux p q = Rational.addAux r s := by
+theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.addAux p q = Rational.addAux r s := by
   intros
   apply Quotient.sound
   apply PreRational.add_well_defined
@@ -31,3 +31,16 @@ theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r →  q ≈ s → 
 def Rational.add (p q : Rational) : Rational := Quotient.lift₂ Rational.addAux Rational.addAux_lift p q
 
 instance : Add Rational := ⟨Rational.add⟩
+
+def Rational.subAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.sub p q)
+
+theorem Rational.subAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.subAux p q = Rational.subAux r s := by
+  intros
+  apply Quotient.sound
+  apply PreRational.sub_well_defined
+  . assumption
+  . assumption
+
+def Rational.sub (p q : Rational) : Rational := Quotient.lift₂ Rational.subAux Rational.subAux_lift p q
+
+instance : Sub Rational := ⟨Rational.sub⟩
