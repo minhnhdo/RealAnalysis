@@ -3,6 +3,10 @@ import RealAnalysis.Rational.Pre.Lemmas
 
 def Rational := Quotient (PreRational.instSetoid)
 
+instance : Inhabited Rational := ⟨Quotient.mk' Inhabited.default⟩
+
+instance {n} : OfNat Rational n := ⟨Quotient.mk' (OfNat.ofNat n)⟩
+
 def Rational.negAux (p : PreRational) : Rational := Quotient.mk' (PreRational.neg p)
 
 theorem Rational.negAux_lift (p q : PreRational) : p ≈ q → Rational.negAux p = Rational.negAux q := by
