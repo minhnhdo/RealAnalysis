@@ -136,31 +136,31 @@ theorem PreRational.sub_well_defined (p q r s : PreRational) (h_pq_equiv : p ≈
       _ = p.denominator * r.denominator *
         ((q.numerator * s.denominator) + -(q.denominator * s.numerator)) := by rw [Int.mul_add]
 
-theorem PreRational.lt_well_defined (p q r s: PreRational) (h_pq_equiv : p ≈ q) (h_rs_equiv : r ≈ s) (h_p_lt_r : p < r) : q < s := by
+theorem PreRational.lt_well_defined (p q r s: PreRational) (h_pr_equiv : p ≈ r) (h_qs_equiv : q ≈ s) (h_p_lt_r : p < q) : r < s := by
     simp [HasEquiv.Equiv, LT.lt] at *
     simp [PreRational.lt, HSub.hSub, Sub.sub, PreRational.sub, HAdd.hAdd, Add.add, PreRational.add] at *
     simp [PreRational.addNumerator, PreRational.addDenominator, PreRational.isPositive] at *
     rw [PreRational.neg_numerator, PreRational.neg_denominator] at *
     apply Int.mul_pos
-    . apply @Int.pos_of_mul_pos_left (s.numerator * q.denominator + s.denominator * -q.numerator) p.denominator
-      . apply @Int.pos_of_mul_pos_right r.denominator
-        . rw [Int.add_mul, Int.mul_assoc s.denominator, Int.mul_comm (-q.numerator), Int.mul_neg, ← h_pq_equiv]
-          rw [← Int.neg_mul, Int.mul_assoc, Int.mul_comm q.denominator, ← Int.mul_assoc, ← Int.mul_assoc]
-          rw [← Int.add_mul, ← Int.mul_assoc, Int.mul_add, ← Int.mul_assoc, ← Int.mul_assoc, ← h_rs_equiv]
-          rw [Int.mul_comm r.numerator, Int.mul_comm r.denominator, Int.mul_assoc, Int.mul_assoc, ← Int.mul_add]
+    . apply @Int.pos_of_mul_pos_left (s.numerator * r.denominator + s.denominator * -r.numerator) p.denominator
+      . apply @Int.pos_of_mul_pos_right q.denominator
+        . rw [Int.add_mul, Int.mul_assoc s.denominator, Int.mul_comm (-r.numerator), Int.mul_neg, ← h_pr_equiv]
+          rw [← Int.neg_mul, Int.mul_assoc, Int.mul_comm r.denominator, ← Int.mul_assoc, ← Int.mul_assoc]
+          rw [← Int.add_mul, ← Int.mul_assoc, Int.mul_add, ← Int.mul_assoc, ← Int.mul_assoc, ← h_qs_equiv]
+          rw [Int.mul_comm q.numerator, Int.mul_comm q.denominator, Int.mul_assoc, Int.mul_assoc, ← Int.mul_add]
           apply Int.mul_pos
           . apply Int.mul_pos
             . exact s.zero_lt_denominator
             . apply Int.pos_of_mul_pos_left h_p_lt_r
               apply Int.mul_pos
-              . exact r.zero_lt_denominator
+              . exact q.zero_lt_denominator
               . exact p.zero_lt_denominator
-          . exact q.zero_lt_denominator
-        . exact r.zero_lt_denominator
+          . exact r.zero_lt_denominator
+        . exact q.zero_lt_denominator
       . exact p.zero_lt_denominator
     . apply Int.mul_pos
       . exact s.zero_lt_denominator
-      . exact q.zero_lt_denominator
+      . exact r.zero_lt_denominator
 
 theorem PreRational.lt_trans (p q r : PreRational) (h_p_lt_q : p < q) (h_q_lt_r : q < r) : p < r := by
     simp [LT.lt, PreRational.lt] at *
