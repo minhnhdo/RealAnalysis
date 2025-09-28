@@ -6,7 +6,7 @@ import RealAnalysis.Bound.Basic
 class AxiomaticReal (t : Type _) extends Field t, LinearOrder t where
   add_preservation : ∀ x y z : t, x ≤ y → x + z ≤ y + z
   mul_preservation : ∀ x y : t, 0 ≤ x ∧ 0 ≤ y → 0 ≤ x * y
-  completeness : ∀ (s : Set t) (ub : t), s.Nonempty ∧ s.BoundedAbove ub → ∃ lub, s.Sup lub
+  completeness : ∀ (s : Set t) (ub : t), s.Nonempty ∧ s.IsBoundedAbove ub → ∃ lub, s.Sup lub
 
 class TarskiReal (t : Type _) extends LT t, Add t where
   lt_asymm : ∀ x y : t, x < y → ¬y < x
