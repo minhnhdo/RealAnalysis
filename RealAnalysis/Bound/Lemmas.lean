@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Order.Ring.Unbundled.Rat
 import Mathlib.Data.Rat.Init
 import Mathlib.Data.Set.Basic
+import Mathlib.Order.Defs.PartialOrder
 import RealAnalysis.Bound.Basic
 
 theorem Set.IsBoundedAbove_trans
@@ -77,3 +78,39 @@ theorem Set.s_imp_Sup_le
       apply h_subset
       assumption
     exact h_lub₁.right lub₂ s₁_bounded_by_lub₂
+
+theorem Set.Sup_unique
+  {t} [PartialOrder t]
+  (s : Set t) (lub₁ lub₂ : t) (h_lub₁ : s.Sup lub₁) (h_lub₂ : s.Sup lub₂)
+  : lub₁ = lub₂ := by
+    simp [Set.Sup] at *
+    apply eq_of_le_of_ge
+    · apply h_lub₁.right lub₂
+      exact h_lub₂.left
+    · apply h_lub₂.right lub₁
+      exact h_lub₁.left
+
+theorem Set.Inf_unique
+  {t} [PartialOrder t]
+  (s : Set t) (glb₁ glb₂ : t) (h_glb₁ : s.Inf glb₁) (h_glb₂ : s.Inf glb₂)
+  : glb₁ = glb₂ := by
+    simp [Set.Inf] at *
+    apply eq_of_le_of_ge
+    · apply h_glb₁.right glb₂
+      exact h_glb₂.left
+    · apply h_glb₂.right glb₁
+      exact h_glb₁.left
+
+theorem Set.Inf_le_Sup
+  {t} [Preorder t]
+  (s : Set t) (h_s_nonempty : s.Nonempty) (glb lub : t) (h_glb : s.Inf glb) (h_lub : s.Sup lub)
+  : glb ≤ lub := by
+    obtain ⟨x, h_x_in_s⟩ := h_s_nonempty
+    have glb_le_x := by
+      apply h_glb.left x
+      assumption
+    have x_le_lub := by
+      apply h_lub.left x
+      assumption
+    apply le_trans glb_le_x
+    assumption
