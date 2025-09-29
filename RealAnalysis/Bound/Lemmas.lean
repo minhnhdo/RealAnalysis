@@ -20,8 +20,8 @@ theorem Set.Sup_le_ub_iff
   {t} [Preorder t]
   (s : Set t) (lub ub : t)
   (h_lub : s.Sup lub)
-  :  lub ≤ ub ↔ s.IsBoundedAbove ub := by
-    apply Iff.intro
+  : lub ≤ ub ↔ s.IsBoundedAbove ub := by
+    constructor
     · exact s.IsBoundedAbove_trans lub ub h_lub.left
     · intro h_ub
       simp [Set.Sup] at *
@@ -66,7 +66,7 @@ theorem Set.lt_Sup
     have h_not_lub_le_b := LT.lt.not_ge h_lt
     contradiction
 
-theorem Set.s_imp_Sup_le
+theorem Set.subset_imp_Sup_le
   {t} [Preorder t]
   (s₁ s₂ : Set t) (lub₁ lub₂ : t)
   (h_lub₁ : s₁.Sup lub₁) (h_lub₂ : s₂.Sup lub₂) (h_subset : s₁ ⊆ s₂)
@@ -114,3 +114,34 @@ theorem Set.Inf_le_Sup
       assumption
     apply le_trans glb_le_x
     assumption
+
+theorem Set.Sup_alt
+  {t} [LinearOrder t]
+  (s : Set t) (lub : t)
+  : s.Sup lub ↔ s.IsBoundedAbove lub ∧ ∀ x, x < lub → ∃ y, y ∈ s ∧ x < y := by
+    constructor
+    · intro h_lub
+      constructor
+      · exact h_lub.left
+      · intros x h_x_lt_lub
+        have not_s_bounded_by_x := s.lt_Sup x lub h_lub h_x_lt_lub
+        simp [Set.IsBoundedAbove] at not_s_bounded_by_x
+        assumption
+    · intro ⟨h_lb, h₁⟩
+      constructor
+      · assumption
+      · intros ub h_ub
+        cases le_total lub ub with
+        | inl =>
+          assumption
+        | inr ub_le_lub =>
+          rw [le_iff_eq_or_lt] at *
+          cases ub_le_lub with
+          | inl ub_eq_lub =>
+            left
+            rw [ub_eq_lub]
+          | inr ub_lt_lub =>
+            obtain ⟨y, ⟨y_in_s, ub_lt_y⟩⟩ := h₁ ub ub_lt_lub
+            have y_le_ub := h_ub y y_in_s
+            have not_y_le_ub := LT.lt.not_ge ub_lt_y
+            contradiction
