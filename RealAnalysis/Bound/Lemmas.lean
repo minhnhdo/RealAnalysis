@@ -10,7 +10,6 @@ theorem Set.IsBoundedAbove_trans
   (h_ub₁ : s.IsBoundedAbove ub₁)
   (h_ub₁_le_ub₂ : ub₁ ≤ ub₂)
   : s.IsBoundedAbove ub₂ := by
-    simp [Set.IsBoundedAbove] at *
     intros x h_x_in_s
     have h_x_le_ub₁ := h_ub₁ x h_x_in_s
     apply le_trans h_x_le_ub₁
@@ -24,14 +23,12 @@ theorem Set.Sup_le_ub_iff
     constructor
     · exact s.IsBoundedAbove_trans lub ub h_lub.left
     · intro h_ub
-      simp [Set.Sup] at *
       exact h_lub.right ub h_ub
 
 theorem Set.Sup_le_bound_iff
   {t} [Preorder t]
   (s : Set t) (lub b : t) (h_lub : s.Sup lub)
   : (∀ x, x ∈ s → x ≤ b) ↔ lub ≤ b := by
-    simp [Set.Sup] at *
     apply Iff.intro
     · intro h_b
       apply h_lub.right
@@ -66,12 +63,20 @@ theorem Set.lt_Sup
     have h_not_lub_le_b := LT.lt.not_ge h_lt
     contradiction
 
+theorem Set.Inf_lt
+  {t} [Preorder t]
+  (s : Set t) (b glb : t) (h_glb : s.Inf glb) (h_lt : glb < b)
+  : ¬s.IsBoundedBelow b := by
+    intro h_lb
+    have h_glb_le_b := h_glb.right b h_lb
+    have h_not_glb_le_b := LT.lt.not_ge h_lt
+    contradiction
+
 theorem Set.subset_imp_Sup_le
   {t} [Preorder t]
   (s₁ s₂ : Set t) (lub₁ lub₂ : t)
   (h_lub₁ : s₁.Sup lub₁) (h_lub₂ : s₂.Sup lub₂) (h_subset : s₁ ⊆ s₂)
   : lub₁ ≤ lub₂ := by
-    simp [Set.Sup] at *
     have s₁_bounded_by_lub₂ : s₁.IsBoundedAbove lub₂ := by
       intro _ h_x_in_s₁
       apply h_lub₂.left
@@ -83,7 +88,6 @@ theorem Set.Sup_unique
   {t} [PartialOrder t]
   (s : Set t) (lub₁ lub₂ : t) (h_lub₁ : s.Sup lub₁) (h_lub₂ : s.Sup lub₂)
   : lub₁ = lub₂ := by
-    simp [Set.Sup] at *
     apply eq_of_le_of_ge
     · apply h_lub₁.right lub₂
       exact h_lub₂.left
@@ -94,12 +98,11 @@ theorem Set.Inf_unique
   {t} [PartialOrder t]
   (s : Set t) (glb₁ glb₂ : t) (h_glb₁ : s.Inf glb₁) (h_glb₂ : s.Inf glb₂)
   : glb₁ = glb₂ := by
-    simp [Set.Inf] at *
     apply eq_of_le_of_ge
-    · apply h_glb₁.right glb₂
-      exact h_glb₂.left
     · apply h_glb₂.right glb₁
       exact h_glb₁.left
+    · apply h_glb₁.right glb₂
+      exact h_glb₂.left
 
 theorem Set.Inf_le_Sup
   {t} [Preorder t]
@@ -144,4 +147,35 @@ theorem Set.Sup_alt
             obtain ⟨y, ⟨y_in_s, ub_lt_y⟩⟩ := h₁ ub ub_lt_lub
             have y_le_ub := h_ub y y_in_s
             have not_y_le_ub := LT.lt.not_ge ub_lt_y
+            contradiction
+
+theorem Set.Inf_alt
+  {t} [LinearOrder t]
+  (s : Set t) (glb : t)
+  : s.Inf glb ↔ s.IsBoundedBelow glb ∧ ∀ x, glb < x → ∃ y, y ∈ s ∧ y < x := by
+    constructor
+    · intro h_glb
+      constructor
+      · exact h_glb.left
+      · intros x h_glb_lt_x
+        have not_s_bounded_by_x := s.Inf_lt x glb h_glb h_glb_lt_x
+        simp [Set.IsBoundedBelow] at not_s_bounded_by_x
+        assumption
+    · intro ⟨h_lb, h₁⟩
+      constructor
+      · assumption
+      · intros lb h_lb
+        cases le_total lb glb with
+        | inl =>
+          assumption
+        | inr glb_le_lb =>
+          rw [le_iff_eq_or_lt] at *
+          cases glb_le_lb with
+          | inl glb_eq_lb =>
+            left
+            rw [glb_eq_lb]
+          | inr glb_lt_lb =>
+            obtain ⟨y, ⟨y_in_s, y_lt_ub⟩⟩ := h₁ lb glb_lt_lb
+            have lb_le_y := h_lb y y_in_s
+            have not_lb_le_y := LT.lt.not_ge y_lt_ub
             contradiction

@@ -11,7 +11,7 @@ def Set.Sup {t} [Preorder t] (s : Set t) (lub : t) :=
 def Set.IsBoundedBelow {t} [Preorder t] (s : Set t) (lowerBound : t) := ∀ x, x ∈ s → lowerBound ≤ x
 
 def Set.Inf {t} [Preorder t] (s : Set t) (glb : t) :=
-  s.IsBoundedBelow glb ∧ ∀ lb, s.IsBoundedBelow lb → glb ≤ lb
+  s.IsBoundedBelow glb ∧ ∀ lb, s.IsBoundedBelow lb → lb ≤ glb
 
 def Set.IsComplete {t} [Preorder t] (s : Set t) :=
   ∀ ub, s.Nonempty → s.IsBoundedAbove ub → ∃ lub, s.Sup lub
