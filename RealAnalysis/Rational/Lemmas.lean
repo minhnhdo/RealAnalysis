@@ -1,4 +1,4 @@
-import RealAnalysis.Rational.Pre.Basic
+import RealAnalysis.Rational.Basic
 
 theorem PreRational.zero_lt_denominator (p : PreRational): 0 < (p.denominator : Int) := by
   simp

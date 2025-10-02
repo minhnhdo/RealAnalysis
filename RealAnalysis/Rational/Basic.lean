@@ -1,46 +1,59 @@
-import RealAnalysis.Rational.Pre.Basic
-import RealAnalysis.Rational.Pre.Lemmas
+structure PreRational where
+  numerator : Int
+  denominator : Nat
+  denominator_ne_zero : denominator ≠ 0
 
-def Rational := Quotient (PreRational.instSetoid)
+instance : Inhabited PreRational where
+  default := ⟨0, 1, by decide⟩
 
-instance : Inhabited Rational := ⟨Quotient.mk' Inhabited.default⟩
+instance {n} : OfNat PreRational n where
+  ofNat := ⟨n, 1, by decide⟩
 
-instance {n} : OfNat Rational n := ⟨Quotient.mk' (OfNat.ofNat n)⟩
+protected def PreRational.neg (q : PreRational) : PreRational :=
+  ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
 
-protected def Rational.negAux (p : PreRational) : Rational := Quotient.mk' (PreRational.neg p)
+instance : Neg PreRational where
+  neg := PreRational.neg
 
-theorem Rational.negAux_lift (p q : PreRational) : p ≈ q → Rational.negAux p = Rational.negAux q := by
-  intro
-  apply Quotient.sound
-  apply PreRational.neg_well_defined
-  assumption
+instance : ToString PreRational where
+  toString q := s!"{q.numerator}/{q.denominator}"
 
-protected def Rational.neg (p : Rational) : Rational := Quotient.lift Rational.negAux Rational.negAux_lift p
+@[simp]
+protected def PreRational.equivalent_relation (p q : PreRational) : Prop :=
+  p.numerator * q.denominator = p.denominator * q.numerator
+  deriving Decidable
 
-instance : Neg Rational := ⟨Rational.neg⟩
+instance : HasEquiv PreRational := ⟨PreRational.equivalent_relation⟩
 
-protected def Rational.addAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.add p q)
+protected def PreRational.addNumerator (p q : PreRational) : Int :=
+  p.numerator * q.denominator + p.denominator * q.numerator
 
-theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.addAux p q = Rational.addAux r s := by
-  intros
-  apply Quotient.sound
-  apply PreRational.add_well_defined
-  . assumption
-  . assumption
+protected def PreRational.addDenominator (p q : PreRational) : Nat :=
+  p.denominator * q.denominator
 
-protected def Rational.add (p q : Rational) : Rational := Quotient.lift₂ Rational.addAux Rational.addAux_lift p q
+protected def PreRational.add (p q : PreRational) : PreRational :=
+  let prf : p.denominator * q.denominator ≠ 0 := by
+    apply Nat.mul_ne_zero
+    exact p.denominator_ne_zero
+    exact q.denominator_ne_zero
+  ⟨p.addNumerator q, p.addDenominator q, prf⟩
 
-instance : Add Rational := ⟨Rational.add⟩
+instance : Add PreRational where
+  add := PreRational.add
 
-protected def Rational.subAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.sub p q)
+protected def PreRational.sub (p q : PreRational) : PreRational :=
+  p + (-q)
 
-theorem Rational.subAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.subAux p q = Rational.subAux r s := by
-  intros
-  apply Quotient.sound
-  apply PreRational.sub_well_defined
-  . assumption
-  . assumption
+instance : Sub PreRational where
+  sub := PreRational.sub
 
-protected def Rational.sub (p q : Rational) : Rational := Quotient.lift₂ Rational.subAux Rational.subAux_lift p q
+def PreRational.isPositive (p : PreRational) : Prop :=
+  0 < p.numerator * p.denominator
+  deriving Decidable
 
-instance : Sub Rational := ⟨Rational.sub⟩
+protected def PreRational.lt : PreRational → PreRational → Prop
+  | p, q => (q - p).isPositive
+  deriving Decidable
+
+instance : LT PreRational where
+  lt := PreRational.lt
