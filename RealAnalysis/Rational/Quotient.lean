@@ -1,16 +1,16 @@
 import RealAnalysis.Rational.Basic
 import RealAnalysis.Rational.Lemmas
 
-def RationalQuotient := Quotient (PreRational.instSetoid)
+def RationalQuotient := Quotient Rational.instSetoid
 
 instance : Inhabited RationalQuotient := ⟨Quotient.mk' Inhabited.default⟩
 
 instance {n} : OfNat RationalQuotient n := ⟨Quotient.mk' (OfNat.ofNat n)⟩
 
-protected def RationalQuotient.negAux (p : PreRational) : RationalQuotient := Quotient.mk' (PreRational.neg p)
+protected def RationalQuotient.negAux (p : Rational) : RationalQuotient := Quotient.mk' (Rational.neg p)
 
 theorem RationalQuotient.negAux_lift
-  (p q : PreRational)
+  (p q : Rational)
   : p ≈ q → RationalQuotient.negAux p = RationalQuotient.negAux q := by
     intro
     apply Quotient.sound
@@ -21,14 +21,14 @@ protected def RationalQuotient.neg (p : RationalQuotient) : RationalQuotient := 
 
 instance : Neg RationalQuotient := ⟨RationalQuotient.neg⟩
 
-protected def RationalQuotient.addAux (p q : PreRational) : RationalQuotient := Quotient.mk' (PreRational.add p q)
+protected def RationalQuotient.addAux (p q : Rational) : RationalQuotient := Quotient.mk' (Rational.add p q)
 
 theorem RationalQuotient.addAux_lift
-  (p q r s : PreRational)
+  (p q r s : Rational)
   : p ≈ r → q ≈ s → RationalQuotient.addAux p q = RationalQuotient.addAux r s := by
     intros
     apply Quotient.sound
-    apply PreRational.add_well_defined
+    apply Rational.add_well_defined
     . assumption
     . assumption
 
@@ -37,15 +37,15 @@ protected def RationalQuotient.add (p q : RationalQuotient) : RationalQuotient :
 
 instance : Add RationalQuotient := ⟨RationalQuotient.add⟩
 
-protected def RationalQuotient.subAux (p q : PreRational) : RationalQuotient :=
-  Quotient.mk' (PreRational.sub p q)
+protected def RationalQuotient.subAux (p q : Rational) : RationalQuotient :=
+  Quotient.mk' (Rational.sub p q)
 
 theorem RationalQuotient.subAux_lift
-  (p q r s : PreRational)
+  (p q r s : Rational)
   : p ≈ r → q ≈ s → RationalQuotient.subAux p q = RationalQuotient.subAux r s := by
     intros
     apply Quotient.sound
-    apply PreRational.sub_well_defined
+    apply Rational.sub_well_defined
     . assumption
     . assumption
 

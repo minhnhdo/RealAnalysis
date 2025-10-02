@@ -1,59 +1,59 @@
-structure PreRational where
+structure Rational where
   numerator : Int
   denominator : Nat
   denominator_ne_zero : denominator ≠ 0
 
-instance : Inhabited PreRational where
+instance : Inhabited Rational where
   default := ⟨0, 1, by decide⟩
 
-instance {n} : OfNat PreRational n where
+instance {n} : OfNat Rational n where
   ofNat := ⟨n, 1, by decide⟩
 
-protected def PreRational.neg (q : PreRational) : PreRational :=
+protected def Rational.neg (q : Rational) : Rational :=
   ⟨-q.numerator, q.denominator, q.denominator_ne_zero⟩
 
-instance : Neg PreRational where
-  neg := PreRational.neg
+instance : Neg Rational where
+  neg := Rational.neg
 
-instance : ToString PreRational where
+instance : ToString Rational where
   toString q := s!"{q.numerator}/{q.denominator}"
 
 @[simp]
-protected def PreRational.equivalent_relation (p q : PreRational) : Prop :=
+protected def Rational.equivalent_relation (p q : Rational) : Prop :=
   p.numerator * q.denominator = p.denominator * q.numerator
   deriving Decidable
 
-instance : HasEquiv PreRational := ⟨PreRational.equivalent_relation⟩
+instance : HasEquiv Rational := ⟨Rational.equivalent_relation⟩
 
-protected def PreRational.addNumerator (p q : PreRational) : Int :=
+protected def Rational.addNumerator (p q : Rational) : Int :=
   p.numerator * q.denominator + p.denominator * q.numerator
 
-protected def PreRational.addDenominator (p q : PreRational) : Nat :=
+protected def Rational.addDenominator (p q : Rational) : Nat :=
   p.denominator * q.denominator
 
-protected def PreRational.add (p q : PreRational) : PreRational :=
+protected def Rational.add (p q : Rational) : Rational :=
   let prf : p.denominator * q.denominator ≠ 0 := by
     apply Nat.mul_ne_zero
     exact p.denominator_ne_zero
     exact q.denominator_ne_zero
   ⟨p.addNumerator q, p.addDenominator q, prf⟩
 
-instance : Add PreRational where
-  add := PreRational.add
+instance : Add Rational where
+  add := Rational.add
 
-protected def PreRational.sub (p q : PreRational) : PreRational :=
+protected def Rational.sub (p q : Rational) : Rational :=
   p + (-q)
 
-instance : Sub PreRational where
-  sub := PreRational.sub
+instance : Sub Rational where
+  sub := Rational.sub
 
-def PreRational.isPositive (p : PreRational) : Prop :=
+def Rational.isPositive (p : Rational) : Prop :=
   0 < p.numerator * p.denominator
   deriving Decidable
 
-protected def PreRational.lt : PreRational → PreRational → Prop
+protected def Rational.lt : Rational → Rational → Prop
   | p, q => (q - p).isPositive
   deriving Decidable
 
-instance : LT PreRational where
-  lt := PreRational.lt
+instance : LT Rational where
+  lt := Rational.lt
