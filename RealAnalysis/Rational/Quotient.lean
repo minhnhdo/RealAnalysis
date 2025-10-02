@@ -1,46 +1,55 @@
 import RealAnalysis.Rational.Basic
 import RealAnalysis.Rational.Lemmas
 
-def Rational := Quotient (PreRational.instSetoid)
+def RationalQuotient := Quotient (PreRational.instSetoid)
 
-instance : Inhabited Rational := ⟨Quotient.mk' Inhabited.default⟩
+instance : Inhabited RationalQuotient := ⟨Quotient.mk' Inhabited.default⟩
 
-instance {n} : OfNat Rational n := ⟨Quotient.mk' (OfNat.ofNat n)⟩
+instance {n} : OfNat RationalQuotient n := ⟨Quotient.mk' (OfNat.ofNat n)⟩
 
-protected def Rational.negAux (p : PreRational) : Rational := Quotient.mk' (PreRational.neg p)
+protected def RationalQuotient.negAux (p : PreRational) : RationalQuotient := Quotient.mk' (PreRational.neg p)
 
-theorem Rational.negAux_lift (p q : PreRational) : p ≈ q → Rational.negAux p = Rational.negAux q := by
-  intro
-  apply Quotient.sound
-  apply PreRational.neg_well_defined
-  assumption
+theorem RationalQuotient.negAux_lift
+  (p q : PreRational)
+  : p ≈ q → RationalQuotient.negAux p = RationalQuotient.negAux q := by
+    intro
+    apply Quotient.sound
+    apply PreRational.neg_well_defined
+    assumption
 
-protected def Rational.neg (p : Rational) : Rational := Quotient.lift Rational.negAux Rational.negAux_lift p
+protected def RationalQuotient.neg (p : RationalQuotient) : RationalQuotient := Quotient.lift RationalQuotient.negAux RationalQuotient.negAux_lift p
 
-instance : Neg Rational := ⟨Rational.neg⟩
+instance : Neg RationalQuotient := ⟨RationalQuotient.neg⟩
 
-protected def Rational.addAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.add p q)
+protected def RationalQuotient.addAux (p q : PreRational) : RationalQuotient := Quotient.mk' (PreRational.add p q)
 
-theorem Rational.addAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.addAux p q = Rational.addAux r s := by
-  intros
-  apply Quotient.sound
-  apply PreRational.add_well_defined
-  . assumption
-  . assumption
+theorem RationalQuotient.addAux_lift
+  (p q r s : PreRational)
+  : p ≈ r → q ≈ s → RationalQuotient.addAux p q = RationalQuotient.addAux r s := by
+    intros
+    apply Quotient.sound
+    apply PreRational.add_well_defined
+    . assumption
+    . assumption
 
-protected def Rational.add (p q : Rational) : Rational := Quotient.lift₂ Rational.addAux Rational.addAux_lift p q
+protected def RationalQuotient.add (p q : RationalQuotient) : RationalQuotient :=
+  Quotient.lift₂ RationalQuotient.addAux RationalQuotient.addAux_lift p q
 
-instance : Add Rational := ⟨Rational.add⟩
+instance : Add RationalQuotient := ⟨RationalQuotient.add⟩
 
-protected def Rational.subAux (p q : PreRational) : Rational := Quotient.mk' (PreRational.sub p q)
+protected def RationalQuotient.subAux (p q : PreRational) : RationalQuotient :=
+  Quotient.mk' (PreRational.sub p q)
 
-theorem Rational.subAux_lift (p q r s : PreRational) : p ≈ r → q ≈ s → Rational.subAux p q = Rational.subAux r s := by
-  intros
-  apply Quotient.sound
-  apply PreRational.sub_well_defined
-  . assumption
-  . assumption
+theorem RationalQuotient.subAux_lift
+  (p q r s : PreRational)
+  : p ≈ r → q ≈ s → RationalQuotient.subAux p q = RationalQuotient.subAux r s := by
+    intros
+    apply Quotient.sound
+    apply PreRational.sub_well_defined
+    . assumption
+    . assumption
 
-protected def Rational.sub (p q : Rational) : Rational := Quotient.lift₂ Rational.subAux Rational.subAux_lift p q
+protected def RationalQuotient.sub (p q : RationalQuotient) : RationalQuotient :=
+  Quotient.lift₂ RationalQuotient.subAux RationalQuotient.subAux_lift p q
 
-instance : Sub Rational := ⟨Rational.sub⟩
+instance : Sub RationalQuotient := ⟨RationalQuotient.sub⟩
