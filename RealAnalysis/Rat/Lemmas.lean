@@ -2,6 +2,22 @@ import Mathlib.Algebra.Order.Ring.Unbundled.Rat
 import Mathlib.Data.Rat.Init
 import RealAnalysis.Rat.Defs
 
+theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
+  constructor
+  · intro h
+    simp at h
+    assumption
+  · intro
+    simp
+    assumption
+
+theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 := by
+  intro h_nonpos h_nonneg
+  rw [← Rat.zero_mul q]
+  apply Rat.mul_le_mul_of_nonneg_right
+  · assumption
+  · assumption
+
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
