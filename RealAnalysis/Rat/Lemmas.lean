@@ -2,7 +2,7 @@ import Mathlib.Algebra.Order.Ring.Unbundled.Rat
 import Mathlib.Data.Rat.Init
 import RealAnalysis.Rat.Defs
 
-theorem Rat.abs_nonneg (q : ℚ) : 0 ≤ q.abs := by
+theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
   | inl =>
@@ -20,3 +20,15 @@ theorem Rat.abs_nonneg (q : ℚ) : 0 ≤ q.abs := by
       rw [le_iff_eq_or_lt]
       right
       assumption
+
+theorem Rat.abs_eq_zero {q : ℚ} : q.abs = 0 ↔ q = 0 := by
+  simp [Rat.abs]
+  constructor
+  · intro h_abs_eq_zero
+    by_cases h : 0 ≤ q
+    · simp [h] at h_abs_eq_zero
+      assumption
+    · simp [h] at h_abs_eq_zero
+      assumption
+  · intro
+    simp [*]
