@@ -130,3 +130,65 @@ theorem Rat.abs_eq_zero {q : ℚ} : q.abs = 0 ↔ q = 0 := by
       assumption
   · intro
     simp [*]
+
+theorem Rat.abs_mul {p q : ℚ} : (p * q).abs = p.abs * q.abs := by
+  cases @Rat.lt_total p 0 with
+  | inl =>
+    have : ¬0 ≤ p := by
+      rw [not_le]
+      assumption
+    cases @Rat.lt_total q 0 with
+    | inl =>
+      have : ¬0 ≤ q := by
+        rw [not_le]
+        assumption
+      have : 0 ≤ p * q := by
+        apply le_of_lt
+        apply Rat.lt_zero_mul_lt_zero
+        · assumption
+        · assumption
+      simp [Rat.abs, *]
+    | inr h_q_le_zero =>
+      cases h_q_le_zero with
+      | inl =>
+        have : p * q = 0 := by
+          simp
+          right
+          assumption
+        simp [Rat.abs, *]
+      | inr =>
+        have : 0 ≤ q := by
+          apply le_of_lt
+          assumption
+        have : ¬0 ≤ p * q := by
+          rw [not_le, Rat.mul_neg_iff_of_pos_right]
+          · assumption
+          · assumption
+        simp [Rat.abs, *]
+  | inr h_p_le_zero =>
+    cases h_p_le_zero with
+    | inl =>
+      simp [Rat.abs, *]
+    | inr =>
+      have : 0 ≤ p := by
+        apply le_of_lt
+        assumption
+      cases @Rat.lt_total q 0 with
+      | inl =>
+        have : ¬0 ≤ q := by
+          rw [not_le]
+          assumption
+        have : ¬0 ≤ p * q := by
+          rw [not_le, Rat.mul_neg_iff_of_pos_left]
+          · assumption
+          · assumption
+        simp [Rat.abs, *]
+      | inr h_q_le_zero =>
+        cases h_q_le_zero with
+        | inl =>
+          simp [Rat.abs, *]
+        | inr =>
+          have : 0 ≤ q := by
+            apply le_of_lt
+            assumption
+          simp [Rat.abs, *]
