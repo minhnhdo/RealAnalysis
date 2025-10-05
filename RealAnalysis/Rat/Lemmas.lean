@@ -29,7 +29,6 @@ theorem Rat.lt_total {a b : ℚ} : a < b ∨ a = b ∨ b < a := by
       right
       assumption
 
-
 theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
   repeat rw [Rat.eq_iff_mul_eq_mul]
   rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
