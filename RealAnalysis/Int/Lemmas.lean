@@ -45,3 +45,11 @@ theorem Int.neg_eq_self {a : ℤ} : -a = a ↔ a = 0 := by
     assumption
   · intro
     simp [*]
+
+theorem Int.lt_zero_mul_lt_zero {a b : ℤ} : a < 0 → b < 0 → 0 < a * b := by
+  intros ha hb
+  have : 0 < a * b := by
+    rw [← Int.mul_zero a]
+    rw [Int.mul_lt_mul_left_of_neg ha]
+    assumption
+  assumption
