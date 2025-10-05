@@ -113,6 +113,25 @@ theorem Rat.abs_eq_neg {q : ℚ} : q.abs = -q ↔ q ≤ 0 := by
       rw [← Rat.not_le] at h_neg
       simp [Rat.abs, h_neg]
 
+theorem Rat.le_abs {q : ℚ} : q ≤ q.abs := by
+  cases @Rat.lt_total q 0 with
+  | inl =>
+    have : ¬0 ≤ q := by
+      rw [not_le]
+      assumption
+    simp [Rat.abs, *]
+    apply le_of_lt
+    assumption
+  | inr h_q_le_zero =>
+    cases h_q_le_zero with
+    | inl =>
+      simp [Rat.abs, *]
+    | inr =>
+      have : 0 ≤ q := by
+        apply le_of_lt
+        assumption
+      simp [Rat.abs, *]
+
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
