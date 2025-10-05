@@ -55,6 +55,13 @@ theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
   rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
   apply Int.neg_neg_iff_pos
 
+theorem Rat.lt_zero_mul_lt_zero {p q : ℚ} : p < 0 → q < 0 → 0 < p * q := by
+  intros
+  rw [← Rat.neg_neg_iff_pos, ← Rat.neg_mul, ← Rat.mul_zero (-p), Rat.mul_lt_mul_left]
+  · assumption
+  · rw [neg_pos]
+    assumption
+
 theorem Rat.abs_eq_self {q : ℚ} : q.abs = q ↔ 0 ≤ q := by
   constructor
   · intro h_abs_eq_self
