@@ -47,6 +47,20 @@ theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
   rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
   apply Int.neg_neg_iff_pos
 
+theorem Rat.neg_add_neg {p q : ℚ} : p < 0 → q < 0 → p + q < 0 := by
+  intros
+  rw [← add_zero 0]
+  apply add_lt_add_of_lt_of_lt
+  · assumption
+  · assumption
+
+theorem Rat.pos_add_pos {p q : ℚ} : 0 < p → 0 < q → 0 < p + q := by
+  intros
+  rw [← add_zero 0]
+  apply add_lt_add_of_lt_of_lt
+  · assumption
+  · assumption
+
 theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 := by
   intros
   rw [← Rat.zero_mul q]
