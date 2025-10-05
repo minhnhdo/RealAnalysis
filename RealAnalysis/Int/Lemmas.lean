@@ -20,3 +20,28 @@ theorem Int.neg_eq_self {a : ℤ} : -a = a ↔ a = 0 := by
     assumption
   · intro
     simp [*]
+
+theorem Int.lt_total {a b : ℤ} : a < b ∨ a = b ∨ b < a := by
+  cases Int.le_total a b with
+  | inl h_le =>
+    rw [Int.le_iff_eq_or_lt] at h_le
+    cases h_le with
+    | inl =>
+      right
+      left
+      assumption
+    | inr =>
+      left
+      assumption
+  | inr h_le =>
+    rw [Int.le_iff_eq_or_lt] at h_le
+    cases h_le with
+    | inl h_eq =>
+      symm at h_eq
+      right
+      left
+      assumption
+    | inr =>
+      right
+      right
+      assumption

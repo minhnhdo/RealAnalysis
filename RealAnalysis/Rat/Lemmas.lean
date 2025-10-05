@@ -4,6 +4,32 @@ import Mathlib.Data.Rat.Init
 import RealAnalysis.Int.Lemmas
 import RealAnalysis.Rat.Defs
 
+theorem Rat.lt_total {a b : ℚ} : a < b ∨ a = b ∨ b < a := by
+  cases Rat.le_total with
+  | inl h_le =>
+    rw [le_iff_eq_or_lt] at h_le
+    cases h_le with
+    | inl =>
+      right
+      left
+      assumption
+    | inr =>
+      left
+      assumption
+  | inr h_le =>
+    rw [le_iff_eq_or_lt] at h_le
+    cases h_le with
+    | inl h_eq =>
+      symm at h_eq
+      right
+      left
+      assumption
+    | inr =>
+      right
+      right
+      assumption
+
+
 theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
   repeat rw [Rat.eq_iff_mul_eq_mul]
   rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
