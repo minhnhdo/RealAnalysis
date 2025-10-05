@@ -18,6 +18,20 @@ theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 
   · assumption
   · assumption
 
+theorem Rat.abs_eq_self {q : ℚ} : q.abs = q ↔ 0 ≤ q := by
+  constructor
+  · intro h_abs_eq_self
+    by_cases h : 0 ≤ q
+    · simp [h]
+    · rw [Rat.not_le] at h
+      simp [Rat.abs, h] at h_abs_eq_self
+      rw [le_iff_eq_or_lt]
+      left
+      rw [Rat.neg_eq_self] at h_abs_eq_self
+      rw [h_abs_eq_self]
+  · intro h
+    simp [Rat.abs, h]
+
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
