@@ -4,6 +4,20 @@ import Mathlib.Data.Rat.Init
 import RealAnalysis.Int.Lemmas
 import RealAnalysis.Rat.Defs
 
+theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
+  repeat rw [Rat.eq_iff_mul_eq_mul]
+  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
+  rw [Int.zero_mul, Int.ofNat_one]
+  repeat rw [Int.mul_one]
+  apply Int.neg_eq_zero
+
+theorem Rat.neg_eq_self {q : ℚ} : -q = q ↔ q = 0 := by
+  repeat rw [Rat.eq_iff_mul_eq_mul]
+  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
+  rw [Int.zero_mul, Int.ofNat_one, Int.mul_one, Int.mul_eq_mul_right_iff]
+  · apply Int.neg_eq_self
+  · simp
+
 theorem Rat.lt_total {a b : ℚ} : a < b ∨ a = b ∨ b < a := by
   cases Rat.le_total with
   | inl h_le =>
@@ -29,20 +43,9 @@ theorem Rat.lt_total {a b : ℚ} : a < b ∨ a = b ∨ b < a := by
       right
       assumption
 
-theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
-  repeat rw [Rat.eq_iff_mul_eq_mul]
-  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
-  rw [Int.zero_mul, Int.ofNat_one]
-  repeat rw [Int.mul_one]
-  apply Int.neg_eq_zero
-
-
-theorem Rat.neg_eq_self {q : ℚ} : -q = q ↔ q = 0 := by
-  repeat rw [Rat.eq_iff_mul_eq_mul]
-  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
-  rw [Int.zero_mul, Int.ofNat_one, Int.mul_one, Int.mul_eq_mul_right_iff]
-  · apply Int.neg_eq_self
-  · simp
+theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
+  rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
+  apply Int.neg_neg_iff_pos
 
 theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 := by
   intros
@@ -50,10 +53,6 @@ theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 
   apply Rat.mul_le_mul_of_nonneg_right
   · assumption
   · assumption
-
-theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
-  rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
-  apply Int.neg_neg_iff_pos
 
 theorem Rat.lt_zero_mul_lt_zero {p q : ℚ} : p < 0 → q < 0 → 0 < p * q := by
   intros
