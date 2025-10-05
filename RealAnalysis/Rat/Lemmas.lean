@@ -20,7 +20,7 @@ theorem Rat.neg_eq_self {q : ℚ} : -q = q ↔ q = 0 := by
   · simp
 
 theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 := by
-  intro h_nonpos h_nonneg
+  intros
   rw [← Rat.zero_mul q]
   apply Rat.mul_le_mul_of_nonneg_right
   · assumption
