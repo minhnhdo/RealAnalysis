@@ -1,15 +1,23 @@
 import Mathlib.Algebra.Order.Ring.Unbundled.Rat
+import Mathlib.Data.Rat.Defs
 import Mathlib.Data.Rat.Init
+import RealAnalysis.Int.Lemmas
 import RealAnalysis.Rat.Defs
 
 theorem Rat.neg_eq_zero {q : ℚ} : -q = 0 ↔ q = 0 := by
-  constructor
-  · intro h
-    simp at h
-    assumption
-  · intro
-    simp
-    assumption
+  repeat rw [Rat.eq_iff_mul_eq_mul]
+  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
+  rw [Int.zero_mul, Int.ofNat_one]
+  repeat rw [Int.mul_one]
+  apply Int.neg_eq_zero
+
+
+theorem Rat.neg_eq_self {q : ℚ} : -q = q ↔ q = 0 := by
+  repeat rw [Rat.eq_iff_mul_eq_mul]
+  rw [Rat.neg_den, Rat.neg_num, Rat.num_zero, Rat.den_zero]
+  rw [Int.zero_mul, Int.ofNat_one, Int.mul_one, Int.mul_eq_mul_right_iff]
+  · apply Int.neg_eq_self
+  · simp
 
 theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 := by
   intro h_nonpos h_nonneg
