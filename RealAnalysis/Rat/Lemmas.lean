@@ -40,6 +40,30 @@ theorem Rat.abs_eq_self {q : ℚ} : q.abs = q ↔ 0 ≤ q := by
   · intro h
     simp [Rat.abs, h]
 
+theorem Rat.abs_eq_neg {q : ℚ} : q.abs = -q ↔ q ≤ 0 := by
+  constructor
+  · by_cases h : 0 ≤ q
+    · simp [Rat.abs, h]
+      intro h'
+      symm at h'
+      rw [Rat.neg_eq_self] at h'
+      rw [le_iff_eq_or_lt]
+      left
+      assumption
+    · simp [Rat.abs, h]
+      rw [Rat.not_le] at h
+      rw [le_iff_lt_or_eq]
+      left
+      assumption
+  · intro h
+    rw [le_iff_eq_or_lt] at h
+    cases h with
+    | inl =>
+      simp [Rat.abs, *]
+    | inr h_neg =>
+      rw [← Rat.not_le] at h_neg
+      simp [Rat.abs, h_neg]
+
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
