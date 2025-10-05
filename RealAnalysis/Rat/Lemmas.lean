@@ -51,9 +51,9 @@ theorem Rat.mul_nonpos_nonneg {p q : ℚ} : p ≤ 0 → 0 ≤ q → p * q ≤ 0 
   · assumption
   · assumption
 
-theorem Rat.pos_neg {q : ℚ} : 0 < q ↔ -q < 0 := by
+theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
   rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
-  apply Int.pos_neg
+  apply Int.neg_neg_iff_pos
 
 theorem Rat.abs_eq_self {q : ℚ} : q.abs = q ↔ 0 ≤ q := by
   constructor
