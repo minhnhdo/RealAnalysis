@@ -53,3 +53,17 @@ theorem Int.lt_zero_mul_lt_zero {a b : ℤ} : a < 0 → b < 0 → 0 < a * b := b
     rw [Int.mul_lt_mul_left_of_neg ha]
     assumption
   assumption
+
+theorem Int.pos_neg {a : ℤ} : 0 < a ↔ -a < 0 := by
+  rw [← mul_neg_one]
+  constructor
+  · intro
+    apply Int.mul_neg_of_pos_of_neg
+    · assumption
+    · decide
+  · rw [Int.mul_comm]
+    intro h
+    rw [← @Int.mul_lt_mul_left_of_neg (-1)]
+    · rw [Int.mul_zero]
+      assumption
+    · decide
