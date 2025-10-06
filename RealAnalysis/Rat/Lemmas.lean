@@ -165,6 +165,43 @@ theorem Rat.abs_eq_zero {q : ℚ} : q.abs = 0 ↔ q = 0 := by
   · intro
     simp [*]
 
+theorem Rat.abs_ne_zero {q : ℚ} : q.abs ≠ 0 ↔ q ≠ 0 := by
+  constructor
+  · intro
+    by_cases q = 0
+    · simp [*, Rat.abs_zero] at *
+    · assumption
+  · intro
+    by_cases 0 ≤ q
+    · simp [Rat.abs, *]
+    · simp [Rat.abs, *]
+
+theorem Rat.abs_pos {q : ℚ} : 0 < q.abs ↔ q ≠ 0 := by
+  constructor
+  · by_cases h : 0 ≤ q
+    · simp [Rat.abs, *]
+      intro h_pos
+      obtain ⟨_, ne_zero⟩ := lt_iff_le_and_ne.mp h_pos
+      symm at ne_zero
+      assumption
+    · simp [Rat.abs, *]
+      intro h_neg
+      obtain ⟨_, ne_zero⟩ := lt_iff_le_and_ne.mp h_neg
+      assumption
+  · intro h
+    rw [← lt_or_lt_iff_ne] at h
+    cases h with
+    | inl h_neg =>
+      rw [← not_le] at h_neg
+      simp [Rat.abs, h_neg]
+      rw [not_le] at h_neg
+      assumption
+    | inr h_pos =>
+      have := h_pos
+      apply le_of_lt at h_pos
+      simp [Rat.abs, h_pos]
+      assumption
+
 theorem Rat.abs_add {p q : ℚ} : (p + q).abs ≤ p.abs + q.abs := by
   by_cases hpq : 0 ≤ p + q
   · rw [Rat.abs]
