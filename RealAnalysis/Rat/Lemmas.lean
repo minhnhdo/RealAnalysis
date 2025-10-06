@@ -132,6 +132,8 @@ theorem Rat.le_abs {q : ℚ} : q ≤ q.abs := by
         assumption
       simp [Rat.abs, *]
 
+theorem Rat.abs_zero : Rat.abs 0 = 0 := by simp [Rat.abs]
+
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
   simp [Rat.abs]
   cases @Rat.le_total 0 q with
@@ -162,6 +164,28 @@ theorem Rat.abs_eq_zero {q : ℚ} : q.abs = 0 ↔ q = 0 := by
       assumption
   · intro
     simp [*]
+
+theorem Rat.abs_add {p q : ℚ} : (p + q).abs ≤ p.abs + q.abs := by
+  by_cases hpq : 0 ≤ p + q
+  · rw [Rat.abs]
+    simp [hpq]
+    apply add_le_add
+    · apply Rat.le_abs
+    · apply Rat.le_abs
+  · by_cases hp : 0 ≤ p
+    · have hq : q.abs = -q := by
+        rw [Rat.abs_eq_neg]
+        apply (add_le_add_iff_right q).mpr at hp
+        rw [Rat.zero_add] at hp
+        apply le_trans hp
+        apply le_of_lt
+        rw [← not_le]
+        assumption
+      rw [hq]
+      simp [Rat.abs, *]
+    · by_cases hq : 0 ≤ q
+      · simp [Rat.abs, *]
+      · simp [Rat.abs, *]
 
 theorem Rat.abs_mul {p q : ℚ} : (p * q).abs = p.abs * q.abs := by
   cases @Rat.lt_total p 0 with
