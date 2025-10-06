@@ -188,63 +188,38 @@ theorem Rat.abs_add {p q : ℚ} : (p + q).abs ≤ p.abs + q.abs := by
       · simp [Rat.abs, *]
 
 theorem Rat.abs_mul {p q : ℚ} : (p * q).abs = p.abs * q.abs := by
-  cases @Rat.lt_total p 0 with
-  | inl =>
-    have : ¬0 ≤ p := by
-      rw [not_le]
-      assumption
-    cases @Rat.lt_total q 0 with
+  by_cases hpq : 0 ≤ p * q
+  · rw [Rat.abs]
+    simp [hpq]
+    rw [mul_nonneg_iff] at hpq
+    cases hpq with
     | inl =>
-      have : ¬0 ≤ q := by
-        rw [not_le]
-        assumption
-      have : 0 ≤ p * q := by
-        apply le_of_lt
-        apply Rat.lt_zero_mul_lt_zero
-        · assumption
-        · assumption
       simp [Rat.abs, *]
-    | inr h_q_le_zero =>
-      cases h_q_le_zero with
+    | inr h =>
+      obtain ⟨hp, hq⟩ := h
+      rw [le_iff_eq_or_lt] at hp
+      cases hp with
       | inl =>
-        have : p * q = 0 := by
-          simp
-          right
-          assumption
         simp [Rat.abs, *]
       | inr =>
-        have : 0 ≤ q := by
-          apply le_of_lt
-          assumption
-        have : ¬0 ≤ p * q := by
-          rw [not_le, Rat.mul_neg_iff_of_pos_right]
-          · assumption
-          · assumption
-        simp [Rat.abs, *]
-  | inr h_p_le_zero =>
-    cases h_p_le_zero with
-    | inl =>
-      simp [Rat.abs, *]
-    | inr =>
-      have : 0 ≤ p := by
-        apply le_of_lt
-        assumption
-      cases @Rat.lt_total q 0 with
-      | inl =>
-        have : ¬0 ≤ q := by
-          rw [not_le]
-          assumption
-        have : ¬0 ≤ p * q := by
-          rw [not_le, Rat.mul_neg_iff_of_pos_left]
-          · assumption
-          · assumption
-        simp [Rat.abs, *]
-      | inr h_q_le_zero =>
-        cases h_q_le_zero with
+        rw [le_iff_eq_or_lt] at hq
+        cases hq with
         | inl =>
           simp [Rat.abs, *]
         | inr =>
-          have : 0 ≤ q := by
-            apply le_of_lt
-            assumption
+          rw [← not_le] at *
           simp [Rat.abs, *]
+  · rw [Rat.abs]
+    simp [hpq]
+    rw [not_le, mul_neg_iff] at hpq
+    cases hpq with
+    | inl h =>
+      obtain ⟨hp, hq⟩ := h
+      apply le_of_lt at hp
+      rw [← not_le] at hq
+      simp [Rat.abs, *]
+    | inr h =>
+      obtain ⟨hp, hq⟩ := h
+      rw [← not_le] at hp
+      apply le_of_lt at hq
+      simp [Rat.abs, *]
