@@ -223,3 +223,6 @@ theorem Rat.abs_mul {p q : ℚ} : (p * q).abs = p.abs * q.abs := by
       rw [← not_le] at hp
       apply le_of_lt at hq
       simp [Rat.abs, *]
+
+instance : IsAbsoluteValue Rat.abs :=
+  ⟨@Rat.abs_nonneg, @Rat.abs_eq_zero, @Rat.abs_add, @Rat.abs_mul⟩
