@@ -183,7 +183,7 @@ theorem Rat.abs_add {p q : ℚ} : (p + q).abs ≤ p.abs + q.abs := by
         assumption
       rw [hq]
       simp [Rat.abs, *]
-    · by_cases hq : 0 ≤ q
+    · by_cases 0 ≤ q
       · simp [Rat.abs, *]
       · simp [Rat.abs, *]
 
