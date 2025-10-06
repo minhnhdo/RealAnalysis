@@ -226,3 +226,16 @@ theorem Rat.abs_mul {p q : ℚ} : (p * q).abs = p.abs * q.abs := by
 
 instance : IsAbsoluteValue Rat.abs :=
   ⟨@Rat.abs_nonneg, @Rat.abs_eq_zero, @Rat.abs_add, @Rat.abs_mul⟩
+
+theorem Rat.abs_neg {q : ℚ} : (-q).abs = q.abs := by
+  by_cases h : 0 ≤ q
+  · simp [Rat.abs, h]
+    intro h'
+    have := le_antisymm h' h
+    simp [*]
+  · simp [Rat.abs, h]
+    rw [not_le] at h
+    intro h'
+    have := lt_trans h' h
+    have := lt_irrefl 0
+    contradiction
