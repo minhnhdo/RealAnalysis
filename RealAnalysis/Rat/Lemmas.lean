@@ -202,6 +202,16 @@ theorem Rat.abs_pos {q : ℚ} : 0 < q.abs ↔ q ≠ 0 := by
       simp [Rat.abs, h_pos]
       assumption
 
+theorem Rat.abs_nonpos {q : ℚ} : q.abs ≤ 0 ↔ q = 0 := by
+  constructor
+  · intro
+    rw [← Rat.abs_eq_zero]
+    apply le_antisymm
+    · assumption
+    · exact Rat.abs_nonneg
+  · intro
+    simp [Rat.abs, *]
+
 theorem Rat.abs_add {p q : ℚ} : (p + q).abs ≤ p.abs + q.abs := by
   by_cases hpq : 0 ≤ p + q
   · rw [Rat.abs]
