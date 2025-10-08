@@ -29,29 +29,21 @@ example : { x : ℚ | 0 < x }.Inf 0 := by
   constructor
   · simp [Set.IsBoundedBelow]
     intros
-    apply Rat.le_of_lt
+    apply le_of_lt
     assumption
   · intros lb h_lb
-    cases @Rat.le_total lb 0 with
-    | inl =>
-      assumption
-    | inr zero_le_lb =>
-      rw [le_iff_eq_or_lt] at zero_le_lb
-      cases zero_le_lb with
-      | inl zero_eq_lb =>
-        rw [le_iff_eq_or_lt]
-        left
-        rw [zero_eq_lb]
-      | inr zero_lt_lb =>
-        have not_s_bounded_by_lb : ¬ { x : ℚ | 0 < x }.IsBoundedBelow lb := by
-          simp [Set.IsBoundedBelow]
-          use lb * (mkRat 1 2)
-          constructor
-          · apply Rat.mul_pos
-            · assumption
-            · decide
-          · nth_rw 2 [← @Rat.mul_one lb]
-            apply Rat.mul_lt_mul_of_pos_left
-            · decide
-            · assumption
-        contradiction
+    by_cases h : lb ≤ 0
+    · assumption
+    · rw [not_le] at h
+      have : ¬{ x : ℚ | 0 < x }.IsBoundedBelow lb := by
+        simp [Set.IsBoundedBelow]
+        use lb * mkRat 1 2
+        constructor
+        · apply Rat.mul_pos
+          · assumption
+          · decide
+        · nth_rw 2 [← @Rat.mul_one lb]
+          apply Rat.mul_lt_mul_of_pos_left
+          · decide
+          · assumption
+      contradiction
