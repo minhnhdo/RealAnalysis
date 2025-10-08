@@ -47,3 +47,28 @@ example : { x : ℚ | 0 < x }.Inf 0 := by
           · decide
           · assumption
       contradiction
+
+example : { x : ℚ | x < 0 }.Sup 0 := by
+  constructor
+  · simp [Set.IsBoundedAbove]
+    intros
+    apply le_of_lt
+    assumption
+  · intros ub h_ub
+    by_cases h : 0 ≤ ub
+    · assumption
+    · rw [not_le] at h
+      have : ¬ { x : ℚ | x < 0 }.IsBoundedAbove ub := by
+        simp [Set.IsBoundedAbove]
+        use ub * mkRat 1 2
+        constructor
+        · rw [Rat.mul_neg_iff_of_pos_right]
+          · assumption
+          · decide
+        · nth_rw 1 [← @Rat.mul_one ub]
+          rw [Rat.lt_iff_sub_pos, Rat.sub_eq_add_neg, ← Rat.mul_neg, ← Rat.mul_add]
+          apply Rat.lt_zero_mul_lt_zero
+          · assumption
+          · simp
+            decide
+      contradiction
