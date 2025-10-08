@@ -25,6 +25,20 @@ example : (Finset.cons 2
   simp [Set.IsBoundedAbove] at *
   decide
 
+example : { x : ℚ | x * x < 2 }.IsBoundedAbove (mkRat 3 2) := by
+  simp [Set.IsBoundedAbove]
+  intro p hp
+  by_cases h : p ≤ (mkRat 3 2)
+  · assumption
+  · rw [not_le] at h
+    have h' : (mkRat 3 2) * (mkRat 3 2) < p * p := by
+      apply mul_lt_mul'' h h
+      · decide
+      · decide
+    simp at h'
+    have contra := lt_trans h' hp
+    contradiction
+
 example : { x : ℚ | 0 < x }.Inf 0 := by
   constructor
   · simp [Set.IsBoundedBelow]
