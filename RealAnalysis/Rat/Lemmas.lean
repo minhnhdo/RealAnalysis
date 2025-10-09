@@ -47,6 +47,18 @@ theorem Rat.neg_neg_iff_pos {q : ℚ} : -q < 0 ↔ 0 < q := by
   rw [← Rat.num_pos, ← Rat.num_neg, Rat.num_neg_eq_neg_num]
   apply Int.neg_neg_iff_pos
 
+theorem Rat.half_neg {q : ℚ} (h : q < 0) : q / 2 < 0 := by
+  rw [← neg_pos] at *
+  rw [← neg_div]
+  apply half_pos
+  assumption
+
+theorem Rat.lt_half {q : ℚ} (h : q < 0) : q < q / 2 := by
+  rw [← neg_pos] at h
+  rw [← neg_lt_neg_iff, ← neg_div]
+  apply half_lt_self
+  assumption
+
 theorem Rat.neg_add_neg {p q : ℚ} : p < 0 → q < 0 → p + q < 0 := by
   intros
   rw [← add_zero 0]
