@@ -1,6 +1,4 @@
 import Mathlib.Algebra.Field.Rat
-import Mathlib.Algebra.Order.Field.Basic
-import Mathlib.Algebra.Order.Ring.Rat
 import RealAnalysis.Rat.Lemmas
 import RealAnalysis.Real.CauchySequence.Basic
 
@@ -18,3 +16,14 @@ theorem cauchy₂
     apply add_lt_add_of_lt_of_lt
     · assumption
     · assumption
+
+theorem cauchy₃
+  {f : ℕ → ℚ} (h_causeq : IsCauchySequence f) {ε : ℚ} (hε : 0 < ε)
+  : ∃ i, ∀ j ≥ i, ∀ k ≥ j, (f k - f j).abs < ε := by
+    obtain ⟨i, h⟩ := cauchy₂ h_causeq hε
+    use i
+    intros j hj k hk
+    rw [Rat.abs_sub]
+    apply h j hj k
+    apply le_trans hj
+    assumption
