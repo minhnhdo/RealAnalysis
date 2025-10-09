@@ -1,5 +1,7 @@
+import Mathlib.Algebra.Field.Rat
 import Mathlib.Data.Rat.Init
 import RealAnalysis.Rat.Defs
+import RealAnalysis.Rat.Lemmas
 
 def IsCauchySequence (f : ℕ → ℚ) :=
   ∀ ε > 0, ∃ i, ∀ j ≥ i, (f i - f j).abs < ε
@@ -14,3 +16,10 @@ instance : CoeFun CauchySequence fun _ => ℕ → ℚ :=
 theorem ext {f g : CauchySequence} (h : ∀ i, f i = g i) : f = g := Subtype.eq (funext h)
 
 theorem isCauchySequence (f : CauchySequence) : IsCauchySequence f := f.2
+
+theorem const (a : ℚ) : IsCauchySequence fun _ => a := by
+  simp [IsCauchySequence]
+  intros
+  use 0
+  intros
+  assumption

@@ -144,6 +144,7 @@ theorem Rat.le_abs {q : ℚ} : q ≤ q.abs := by
         assumption
       simp [Rat.abs, *]
 
+@[simp]
 theorem Rat.abs_zero : Rat.abs 0 = 0 := by simp [Rat.abs]
 
 theorem Rat.abs_nonneg {q : ℚ} : 0 ≤ q.abs := by
