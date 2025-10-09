@@ -295,3 +295,7 @@ theorem Rat.abs_sub_le {p q r : ℚ} : (p - r).abs ≤ (p - q).abs + (q - r).abs
     _ = (p + -q + (q - r)).abs := by rw [add_sub_assoc]
     _ = (p - q + (q - r)).abs := by rw [← Rat.sub_eq_add_neg]
     _ ≤ (p - q).abs + (q - r).abs := by exact Rat.abs_add
+
+theorem Rat.abs_sub {p q : ℚ} : (p - q).abs = (q - p).abs := by
+  rw [← Rat.neg_sub]
+  apply Rat.abs_neg
