@@ -286,3 +286,12 @@ theorem Rat.abs_neg {q : ℚ} : (-q).abs = q.abs := by
     have := lt_trans h' h
     have := lt_irrefl 0
     contradiction
+
+theorem Rat.abs_sub_le {p q r : ℚ} : (p - r).abs ≤ (p - q).abs + (q - r).abs := by
+  calc (p - r).abs
+    _ = (p + 0 - r).abs := by rw [Rat.add_zero]
+    _ = (p + (-q + q) - r).abs := by rw [Rat.neg_add_cancel]
+    _ = (p + -q + q - r).abs := by rw [Rat.add_assoc]
+    _ = (p + -q + (q - r)).abs := by rw [add_sub_assoc]
+    _ = (p - q + (q - r)).abs := by rw [← Rat.sub_eq_add_neg]
+    _ ≤ (p - q).abs + (q - r).abs := by exact Rat.abs_add
