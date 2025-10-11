@@ -29,10 +29,12 @@ namespace Metric
 
 variable {t : Type u} [MetricSpace t]
 
-def ball (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
+def openBall (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
+
+alias ball := openBall
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
-def LimitPoint (p : t) (s : Set t) := ∀ r, ∃ q, q ∈ ball p r ∧ q ≠ p → q ∈ s
+def IsLimitPoint (p : t) (s : Set t) := ∀ r, ∃ q, q ∈ ball p r ∧ q ≠ p → q ∈ s
 
 end Metric
