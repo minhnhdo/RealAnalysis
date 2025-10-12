@@ -70,3 +70,12 @@ theorem ball_is_open {a : t} {r : ℝ} : (ball a r).IsOpen := by
     calc dist a c
       _ ≤ dist a b + dist b c := dist_triangle
       _ < r := hbc
+
+def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
+
+example : (∅ : Set ℝ).IsClosed := by
+  simp [Set.IsClosed, IsLimitPoint]
+  use 1
+  exact zero_lt_one
+
+example : (Set.univ : Set ℝ).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
