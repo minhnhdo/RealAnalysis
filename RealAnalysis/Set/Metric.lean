@@ -46,6 +46,8 @@ def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
 def IsLimitPoint (p : t) (s : Set t) := ∀ r, ∃ q, q ∈ ball p r ∧ q ≠ p → q ∈ s
 
+def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
+
 theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
   simp [openBall] at *
   apply lt_of_le_of_lt (MetricSpace.dist_nonneg p q)
