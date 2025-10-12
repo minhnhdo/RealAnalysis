@@ -44,7 +44,7 @@ alias ball := openBall
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
-def IsLimitPoint (p : t) (s : Set t) := ∀ r, ∃ q, q ∈ ball p r ∧ q ≠ p → q ∈ s
+def IsLimitPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
 
 def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
 
@@ -55,11 +55,19 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
 
 example : IsLimitPoint 0 { p : ℝ | ∃ n : ℕ, (p = (n + (1 : ℝ))⁻¹ ∨ p = -(n + (1 : ℝ))⁻¹) } := by
   simp [IsLimitPoint, openBall, dist]
-  intros
-  use (1 + (1 : ℝ))⁻¹
-  intros
-  use 1
-  left
-  simp
+  intros r hr
+  use r / 2
+  constructor
+  · rw [abs_of_nonneg]
+    · apply half_lt_self
+      assumption
+    · apply le_of_lt
+      apply half_pos
+      assumption
+  · constructor
+    · simp
+      apply ne_of_gt
+      assumption
+    · sorry
 
 end Metric
