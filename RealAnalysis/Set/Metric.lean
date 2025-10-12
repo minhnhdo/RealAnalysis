@@ -58,3 +58,15 @@ def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
 example : (∅ : Set ℝ).IsOpen := by simp [Set.IsOpen]
 
 example : (Set.univ : Set ℝ).IsOpen := by simp [Set.IsOpen, IsInteriorPoint]
+
+theorem ball_is_open {a : t} {r : ℝ} : (ball a r).IsOpen := by
+  simp [Set.IsOpen, openBall, IsInteriorPoint]
+  intros b hab
+  constructor
+  · assumption
+  · use r - dist a b
+    intro c hbc
+    rw [lt_sub_iff_add_lt, add_comm] at hbc
+    calc dist a c
+      _ ≤ dist a b + dist b c := dist_triangle
+      _ < r := hbc
