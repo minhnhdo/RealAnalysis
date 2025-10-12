@@ -25,8 +25,6 @@ instance : MetricSpace ℝ where
       simp
   dist_triangle p q r := abs_sub_le p q r
 
-namespace Metric
-
 variable {t : Type u} [MetricSpace t]
 
 theorem dist_nonneg {p q : t} : 0 ≤ dist p q := MetricSpace.dist_nonneg p q
@@ -48,9 +46,15 @@ def IsLimitPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p �
 
 def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
 
+def IsInteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
+
 theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
   simp [openBall] at *
   apply lt_of_le_of_lt (MetricSpace.dist_nonneg p q)
   assumption
 
-end Metric
+def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
+
+example : (∅ : Set ℝ).IsOpen := by simp [Set.IsOpen]
+
+example : (Set.univ : Set ℝ).IsOpen := by simp [Set.IsOpen, IsInteriorPoint]
