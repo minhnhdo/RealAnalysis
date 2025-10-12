@@ -53,9 +53,9 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
 
 example : IsLimitPoint 0 { p : ℝ | ∃ n : ℕ, (p = (n + (1 : ℝ))⁻¹ ∨ p = -(n + (1 : ℝ))⁻¹) } := by
   simp [IsLimitPoint, openBall, dist]
-  intro r
+  intros
   use (1 + (1 : ℝ))⁻¹
-  intro hr hne
+  intros
   use 1
   left
   simp
