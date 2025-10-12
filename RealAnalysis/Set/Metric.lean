@@ -53,21 +53,4 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
   apply lt_of_le_of_lt (MetricSpace.dist_nonneg p q)
   assumption
 
-example : IsLimitPoint 0 { p : ℝ | ∃ n : ℕ, (p = (n + (1 : ℝ))⁻¹ ∨ p = -(n + (1 : ℝ))⁻¹) } := by
-  simp [IsLimitPoint, openBall, dist]
-  intros r hr
-  use r / 2
-  constructor
-  · rw [abs_of_nonneg]
-    · apply half_lt_self
-      assumption
-    · apply le_of_lt
-      apply half_pos
-      assumption
-  · constructor
-    · simp
-      apply ne_of_gt
-      assumption
-    · sorry
-
 end Metric
