@@ -83,3 +83,5 @@ theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, IsLimi
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
+
+def Set.closure (s : Set t) : Set t := s ∪ {p | IsLimitPoint p s}
