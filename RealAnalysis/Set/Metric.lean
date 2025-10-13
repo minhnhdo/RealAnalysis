@@ -46,7 +46,7 @@ alias ball := openBall
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
-def IsLimitPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
+def IsLimitPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
 
 def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
 
@@ -56,6 +56,10 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
   simp [openBall] at *
   apply lt_of_le_of_lt (MetricSpace.dist_nonneg p q)
   assumption
+
+theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r := by
+  simp [closedBall] at *
+  exact le_trans dist_nonneg h
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
 
@@ -77,11 +81,7 @@ theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
 
 def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
 
-theorem empty_isClosed : (∅ : Set t).IsClosed := by
-  simp [Set.IsClosed, IsLimitPoint]
-  intro
-  use 1
-  simp
+theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
 
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
 
