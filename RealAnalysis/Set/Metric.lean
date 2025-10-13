@@ -52,14 +52,11 @@ def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
 
 def IsInteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
 
-theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
-  simp [openBall] at *
-  apply lt_of_le_of_lt (MetricSpace.dist_nonneg p q)
-  assumption
+theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
+  lt_of_le_of_lt dist_nonneg h
 
-theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r := by
-  simp [closedBall] at *
-  exact le_trans dist_nonneg h
+theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r :=
+  le_trans dist_nonneg h
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
 
