@@ -11,6 +11,7 @@ export Dist (dist)
 class MetricSpace (t : Type u) extends Dist t where
   dist_nonneg (p q : t) : 0 ≤ dist p q
   dist_eq_zero (p q : t) : dist p q = 0 ↔ p = q
+  dist_comm (p q : t) : dist p q = dist q p
   dist_triangle (p q r : t) : dist p r ≤ dist p q + dist q r
 
 instance : MetricSpace ℝ where
@@ -23,6 +24,7 @@ instance : MetricSpace ℝ where
     · intro h
       rw [h]
       simp
+  dist_comm p q := abs_sub_comm p q
   dist_triangle p q r := abs_sub_le p q r
 
 variable {t : Type u} [MetricSpace t]
@@ -31,6 +33,8 @@ theorem dist_nonneg {p q : t} : 0 ≤ dist p q := MetricSpace.dist_nonneg p q
 
 @[simp]
 theorem dist_eq_zero {p q : t} : dist p q = 0 ↔ p = q := MetricSpace.dist_eq_zero p q
+
+theorem dist_comm {p q : t} : dist p q = dist q p := MetricSpace.dist_comm p q
 
 theorem dist_triangle {p q r : t} : dist p r ≤ dist p q + dist q r :=
   MetricSpace.dist_triangle p q r
