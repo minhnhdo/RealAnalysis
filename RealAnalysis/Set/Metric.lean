@@ -55,11 +55,11 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r := by
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
 
-example : (∅ : Set ℝ).IsOpen := by simp [Set.IsOpen]
+theorem empty_isOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
 
-example : (Set.univ : Set ℝ).IsOpen := by simp [Set.IsOpen, IsInteriorPoint]
+theorem univ_isOpen : (Set.univ : Set t).IsOpen := by simp [Set.IsOpen, IsInteriorPoint]
 
-theorem ball_is_open {a : t} {r : ℝ} : (ball a r).IsOpen := by
+theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
   simp [Set.IsOpen, openBall, IsInteriorPoint]
   intros b hab
   constructor
@@ -73,9 +73,10 @@ theorem ball_is_open {a : t} {r : ℝ} : (ball a r).IsOpen := by
 
 def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
 
-example : (∅ : Set ℝ).IsClosed := by
+theorem empty_isClosed : (∅ : Set t).IsClosed := by
   simp [Set.IsClosed, IsLimitPoint]
+  intro
   use 1
-  exact zero_lt_one
+  simp
 
-example : (Set.univ : Set ℝ).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
+theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
