@@ -1,4 +1,9 @@
 import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Abel
+
+theorem add_self_eq_twice_self {a : ℝ} : a + a = 2 * a := by
+  abel_nf
+  simp
 
 universe u
 
@@ -81,6 +86,24 @@ def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
 theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
 
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
+
+theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
+  simp [Set.IsClosed, IsLimitPoint, closedBall, openBall]
+  intro b hb
+  obtain ⟨c, ⟨_, _, _⟩⟩ := hb (r - dist a b)
+  have h := calc dist a b
+    _ ≤ dist a c + dist c b := dist_triangle
+    _ ≤ dist a c + dist b c := by nth_rw 2 [dist_comm]
+    _ ≤ r + (r - dist a b) := by
+      apply le_of_lt
+      apply add_lt_add_of_le_of_lt
+      · assumption
+      · assumption
+  rw [add_sub, le_sub_iff_add_le] at h
+  repeat rw [add_self_eq_twice_self] at h
+  apply le_of_mul_le_mul_left at h
+  apply h
+  exact two_pos
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
 
