@@ -107,4 +107,8 @@ theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
 
+theorem empty_isClopen : (∅ : Set t).IsClopen := ⟨empty_isOpen, empty_isClosed⟩
+
+theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isClosed⟩
+
 def Set.closure (s : Set t) : Set t := s ∪ {p | IsLimitPoint p s}
