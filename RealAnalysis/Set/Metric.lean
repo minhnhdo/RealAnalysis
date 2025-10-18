@@ -51,7 +51,14 @@ alias ball := openBall
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
+def AdherentPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ∈ s
+
 def LimitPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
+
+theorem AdherentPoint_of_LimitPoint {p : t} {s : Set t} : LimitPoint p s → AdherentPoint p s := by
+  intro h r
+  obtain ⟨q, _, _, _⟩ := h r
+  use q
 
 def IsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬LimitPoint p s
 
@@ -112,3 +119,35 @@ theorem empty_isClopen : (∅ : Set t).IsClopen := ⟨empty_isOpen, empty_isClos
 theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isClosed⟩
 
 def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
+
+theorem AdherentPoint_of_AdherentPoint_of_closure {p : t} {s : Set t}
+  : AdherentPoint p s.closure → AdherentPoint p s := by
+    intro h r
+    obtain ⟨a, a_in_ball, a_in_closure⟩ := h r
+    cases a_in_closure with
+    | inl =>
+      use a
+    | inr a_is_limit_point =>
+      obtain ⟨_, b, ball'_subset_ball⟩ := ball_isOpen a a_in_ball
+      obtain ⟨c, c_in_ball', _, _⟩ := a_is_limit_point b
+      have := Set.mem_of_mem_of_subset c_in_ball' ball'_subset_ball
+      use c
+
+theorem AdherentPoint_of_LimitPoint_of_closure {p : t} {s : Set t}
+  : LimitPoint p s.closure → AdherentPoint p s :=
+    AdherentPoint_of_AdherentPoint_of_closure ∘ AdherentPoint_of_LimitPoint
+
+theorem AdherentPoint_of_closure_of_AdherentPoint {p : t} {s : Set t}
+  : AdherentPoint p s → AdherentPoint p s.closure := by
+    intro h r
+    obtain ⟨a, _, _⟩ := h r
+    simp [Set.closure, Set.mem_union]
+    use a
+    constructor
+    · assumption
+    · left
+      assumption
+
+theorem AdherentPoint_of_closure_iff_AdherentPoint {p : t} {s : Set t}
+  : AdherentPoint p s.closure ↔ AdherentPoint p s :=
+    Iff.intro AdherentPoint_of_AdherentPoint_of_closure AdherentPoint_of_closure_of_AdherentPoint
