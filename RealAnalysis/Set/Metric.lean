@@ -85,7 +85,7 @@ def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
 
 theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
 
-theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
+theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
 
 theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
   simp [Set.IsClosed, IsLimitPoint, closedBall, openBall]
