@@ -49,7 +49,13 @@ def openBall (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
 @[simp]
 alias ball := openBall
 
+theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
+  lt_of_le_of_lt dist_nonneg h
+
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
+
+theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r :=
+  le_trans dist_nonneg h
 
 def AdherentPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ∈ s
 
@@ -63,12 +69,6 @@ theorem AdherentPoint_of_LimitPoint {p : t} {s : Set t} : LimitPoint p s → Adh
 def IsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬LimitPoint p s
 
 def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
-
-theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
-  lt_of_le_of_lt dist_nonneg h
-
-theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r :=
-  le_trans dist_nonneg h
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, InteriorPoint p s
 
