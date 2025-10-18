@@ -51,11 +51,11 @@ alias ball := openBall
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
-def IsLimitPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
+def LimitPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
 
-def IsIsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬IsLimitPoint p s
+def IsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬LimitPoint p s
 
-def IsInteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
+def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
 
 theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
   lt_of_le_of_lt dist_nonneg h
@@ -63,14 +63,14 @@ theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
 theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r :=
   le_trans dist_nonneg h
 
-def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, IsInteriorPoint p s
+def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, InteriorPoint p s
 
 theorem empty_isOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
 
-theorem univ_isOpen : (Set.univ : Set t).IsOpen := by simp [Set.IsOpen, IsInteriorPoint]
+theorem univ_isOpen : (Set.univ : Set t).IsOpen := by simp [Set.IsOpen, InteriorPoint]
 
 theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
-  simp [Set.IsOpen, openBall, IsInteriorPoint]
+  simp [Set.IsOpen, openBall, InteriorPoint]
   intros b hab
   constructor
   · assumption
@@ -81,14 +81,14 @@ theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
       _ ≤ dist a b + dist b c := dist_triangle
       _ < r := hbc
 
-def Set.IsClosed (s : Set t) : Prop := ∀ p, IsLimitPoint p s → p ∈ s
+def Set.IsClosed (s : Set t) : Prop := ∀ p, LimitPoint p s → p ∈ s
 
-theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, IsLimitPoint]
+theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, LimitPoint]
 
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
 
 theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
-  simp [Set.IsClosed, IsLimitPoint, closedBall, openBall]
+  simp [Set.IsClosed, LimitPoint, closedBall, openBall]
   intro b hb
   obtain ⟨c, ⟨_, _, _⟩⟩ := hb (r - dist a b)
   have h := calc dist a b
@@ -111,4 +111,4 @@ theorem empty_isClopen : (∅ : Set t).IsClopen := ⟨empty_isOpen, empty_isClos
 
 theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isClosed⟩
 
-def Set.closure (s : Set t) : Set t := s ∪ {p | IsLimitPoint p s}
+def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
