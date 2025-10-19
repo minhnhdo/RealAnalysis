@@ -1,10 +1,6 @@
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Abel
 
-theorem add_self_eq_twice_self {a : ℝ} : a + a = 2 * a := by
-  abel_nf
-  simp
-
 universe u
 
 @[ext]
