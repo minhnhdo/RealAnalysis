@@ -128,12 +128,10 @@ theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
       _ < dist a b - dist b c := by
         rw [lt_sub_comm]
         assumption
-    rw [lt_sub_iff_add_lt] at prf₁
-    have contra := calc dist a b ≤ dist a c + dist c b := MetricSpace.dist_triangle a c b
-      _ = dist a c + dist b c := by rw [MetricSpace.dist_comm b c]
-      _ < dist a b := prf₁
-    rw [lt_self_iff_false (dist a b)] at contra
-    contradiction
+    rw [lt_sub_iff_add_lt, ← not_le] at prf₁
+    absurd prf₁
+    rw [MetricSpace.dist_comm b c]
+    exact dist_triangle
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
 
