@@ -192,6 +192,26 @@ theorem mem_closure_of_AdherentPoint {p : t} {s : Set t} : AdherentPoint p s →
       assumption
     use q
 
+theorem AdherentPoint_of_mem_closure {p : t} {s : Set t} : p ∈ s.closure → AdherentPoint p s := by
+  intro h
+  cases h with
+  | inl =>
+    intro r _
+    have : p ∈ ball p r := by
+      simp [ball, dist_self]
+      assumption
+    use p
+  | inr =>
+    apply AdherentPoint_of_LimitPoint
+    assumption
+
+theorem points_of_closure {s : Set t} : {p | AdherentPoint p s} = s.closure := by
+  apply subset_antisymm
+  · intro
+    exact mem_closure_of_AdherentPoint
+  · intro
+    exact AdherentPoint_of_mem_closure
+
 theorem Set.closure_isClosed {s : Set t} : s.closure.IsClosed := by
   intro _ _
   apply mem_closure_of_AdherentPoint
