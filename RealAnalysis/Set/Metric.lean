@@ -39,18 +39,38 @@ theorem dist_nonneg {p q : t} : 0 ≤ dist p q := MetricSpace.dist_nonneg p q
 @[simp]
 theorem dist_eq_zero {p q : t} : dist p q = 0 ↔ p = q := MetricSpace.dist_eq_zero p q
 
+theorem dist_self {p : t} : dist p p = 0 := by simp
+
 theorem dist_comm {p q : t} : dist p q = dist q p := MetricSpace.dist_comm p q
 
 theorem dist_triangle {p q r : t} : dist p r ≤ dist p q + dist q r :=
   MetricSpace.dist_triangle p q r
 
-def openBall (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
+def ball (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
 
 @[simp]
-alias ball := openBall
+alias openBall := ball
 
-theorem pos_of_mem_ball {r : ℝ} {p q : t} (h : q ∈ ball p r) : 0 < r :=
+theorem pos_of_mem_ball {p q : t} {r : ℝ} (h : q ∈ ball p r) : 0 < r :=
   lt_of_le_of_lt dist_nonneg h
+
+theorem mem_ball_self {p : t} {r : ℝ} : 0 < r → p ∈ ball p r := by
+  intro h
+  simp [ball, dist_self]
+  assumption
+
+theorem nonempty_ball {p : t} {r : ℝ} : (ball p r).Nonempty ↔ 0 < r := by
+  constructor
+  · intro h
+    obtain ⟨_, h_mem⟩ := h
+    exact pos_of_mem_ball h_mem
+  · intro h
+    use p
+    apply mem_ball_self
+    assumption
+
+theorem ball_eq_empty {p : t} {r : ℝ} : ball p r = ∅ ↔ r ≤ 0 := by
+  rw [← Set.not_nonempty_iff_eq_empty, nonempty_ball, not_lt]
 
 def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
@@ -77,7 +97,7 @@ theorem empty_isOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
 theorem univ_isOpen : (Set.univ : Set t).IsOpen := by simp [Set.IsOpen, InteriorPoint]
 
 theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
-  simp [Set.IsOpen, openBall, InteriorPoint]
+  simp [Set.IsOpen, ball, InteriorPoint]
   intros b hab
   constructor
   · assumption
@@ -95,7 +115,7 @@ theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, LimitP
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
 
 theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
-  simp [Set.IsClosed, LimitPoint, closedBall, openBall]
+  simp [Set.IsClosed, LimitPoint, closedBall]
   intro b hb
   obtain ⟨c, ⟨_, _, _⟩⟩ := hb (r - dist a b)
   have h := calc dist a b
