@@ -51,50 +51,51 @@ def ball (x : t) (r : ℝ) : Set t := { y : t | dist x y < r }
 @[simp]
 alias openBall := ball
 
-theorem pos_of_mem_ball {p q : t} {r : ℝ} (h : q ∈ ball p r) : 0 < r :=
-  lt_of_le_of_lt dist_nonneg h
+def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
 
-theorem mem_ball_self {p : t} {r : ℝ} : 0 < r → p ∈ ball p r := by
-  intro h
-  simp [ball, dist_self]
-  assumption
+theorem mem_closedBall_self {p : t} {r : ℝ} (h : r ≥ 0) : p ∈ closedBall p r := by
+  have : dist p p = 0 := by rw [dist_eq_zero]
+  simp [closedBall, *]
 
-theorem nonempty_ball {p : t} {r : ℝ} : (ball p r).Nonempty ↔ 0 < r := by
+theorem nonneg_of_mem_closedBall {p q : t} {r : ℝ} (h : q ∈ closedBall p r) : 0 ≤ r :=
+  le_trans dist_nonneg h
+
+theorem nonempty_closedBall {p : t} {r : ℝ} : (closedBall p r).Nonempty ↔ 0 ≤ r := by
   constructor
   · intro h
     obtain ⟨_, h_mem⟩ := h
-    exact pos_of_mem_ball h_mem
+    apply nonneg_of_mem_closedBall h_mem
   · intro h
     use p
-    apply mem_ball_self
+    apply mem_closedBall_self
     assumption
 
-theorem ball_eq_empty {p : t} {r : ℝ} : ball p r = ∅ ↔ r ≤ 0 := by
-  rw [← Set.not_nonempty_iff_eq_empty, nonempty_ball, not_lt]
+theorem closedBall_empty {r : ℝ} {p : t} : closedBall p r = ∅ ↔ r < 0 := by
+  rw [← Set.not_nonempty_iff_eq_empty, nonempty_closedBall, not_le]
 
-def closedBall (x : t) (r : ℝ) : Set t := { y : t | dist x y ≤ r }
+def AdherentPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ∈ s
 
-theorem nonneg_of_mem_closedBall {r : ℝ} {p q : t} (h : q ∈ closedBall p r) : 0 ≤ r :=
-  le_trans dist_nonneg h
-
-def AdherentPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ∈ s
-
-def LimitPoint (p : t) (s : Set t) := ∀ r, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
+def LimitPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
 
 theorem AdherentPoint_of_LimitPoint {p : t} {s : Set t} : LimitPoint p s → AdherentPoint p s := by
-  intro h r
-  obtain ⟨q, _, _, _⟩ := h r
+  intro h r hr
+  obtain ⟨q, _, _, _⟩ := h r hr
   use q
 
 def IsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬LimitPoint p s
 
-def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r, ball p r ⊆ s
+def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r > 0, ball p r ⊆ s
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, InteriorPoint p s
 
 theorem empty_isOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
 
-theorem univ_isOpen : (Set.univ : Set t).IsOpen := by simp [Set.IsOpen, InteriorPoint]
+theorem univ_isOpen : (Set.univ : Set t).IsOpen := by
+  intro p h
+  constructor
+  · assumption
+  · use 1
+    simp
 
 theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
   simp [Set.IsOpen, ball, InteriorPoint]
@@ -102,35 +103,41 @@ theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
   constructor
   · assumption
   · use r - dist a b
-    intro c hbc
-    rw [lt_sub_iff_add_lt, add_comm] at hbc
-    calc dist a c
-      _ ≤ dist a b + dist b c := dist_triangle
-      _ < r := hbc
+    constructor
+    · rw [sub_pos]
+      assumption
+    · intro c hbc
+      rw [lt_sub_iff_add_lt, add_comm] at hbc
+      calc dist a c
+        _ ≤ dist a b + dist b c := dist_triangle
+        _ < r := hbc
 
 def Set.IsClosed (s : Set t) : Prop := ∀ p, LimitPoint p s → p ∈ s
 
-theorem empty_isClosed : (∅ : Set t).IsClosed := by simp [Set.IsClosed, LimitPoint]
+theorem empty_isClosed : (∅ : Set t).IsClosed := by
+  intro p h
+  obtain ⟨q, _, _, mem_empty⟩:= h 1 one_pos
+  rw [Set.mem_empty_iff_false] at mem_empty
+  contradiction
 
 theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
 
 theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
-  simp [Set.IsClosed, LimitPoint, closedBall]
-  intro b hb
-  obtain ⟨c, ⟨_, _, _⟩⟩ := hb (r - dist a b)
-  have h := calc dist a b
-    _ ≤ dist a c + dist c b := dist_triangle
-    _ ≤ dist a c + dist b c := by nth_rw 2 [dist_comm]
-    _ ≤ r + (r - dist a b) := by
-      apply le_of_lt
-      apply add_lt_add_of_le_of_lt
-      · assumption
-      · assumption
-  rw [add_sub, le_sub_iff_add_le] at h
-  repeat rw [add_self_eq_twice_self] at h
-  apply le_of_mul_le_mul_left at h
-  apply h
-  exact two_pos
+  intro b h
+  by_cases hr : dist a b ≤ r
+  · assumption
+  · rw [not_le, ← sub_pos] at hr
+    obtain ⟨c, _, _, _⟩ := h (dist a b - r) hr
+    have prf₁ := calc dist a c ≤ r := by assumption
+      _ < dist a b - dist b c := by
+        rw [lt_sub_comm]
+        assumption
+    rw [lt_sub_iff_add_lt] at prf₁
+    have contra := calc dist a b ≤ dist a c + dist c b := MetricSpace.dist_triangle a c b
+      _ = dist a c + dist b c := by rw [MetricSpace.dist_comm b c]
+      _ < dist a b := prf₁
+    rw [lt_self_iff_false (dist a b)] at contra
+    contradiction
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
 
@@ -142,14 +149,14 @@ def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
 
 theorem AdherentPoint_of_AdherentPoint_of_closure {p : t} {s : Set t}
   : AdherentPoint p s.closure → AdherentPoint p s := by
-    intro h r
-    obtain ⟨a, a_in_ball, a_in_closure⟩ := h r
+    intro h r hr
+    obtain ⟨a, a_in_ball, a_in_closure⟩ := h r hr
     cases a_in_closure with
     | inl =>
       use a
     | inr a_is_limit_point =>
-      obtain ⟨_, b, ball'_subset_ball⟩ := ball_isOpen a a_in_ball
-      obtain ⟨c, c_in_ball', _, _⟩ := a_is_limit_point b
+      obtain ⟨_, b, hb, ball'_subset_ball⟩ := ball_isOpen a a_in_ball
+      obtain ⟨c, c_in_ball', _, _⟩ := a_is_limit_point b hb
       have := Set.mem_of_mem_of_subset c_in_ball' ball'_subset_ball
       use c
 
@@ -159,8 +166,8 @@ theorem AdherentPoint_of_LimitPoint_of_closure {p : t} {s : Set t}
 
 theorem AdherentPoint_of_closure_of_AdherentPoint {p : t} {s : Set t}
   : AdherentPoint p s → AdherentPoint p s.closure := by
-    intro h r
-    obtain ⟨a, _, _⟩ := h r
+    intro h r hr
+    obtain ⟨a, _, _⟩ := h r hr
     simp [Set.closure, Set.mem_union]
     use a
     constructor
@@ -178,8 +185,8 @@ theorem mem_closure_of_AdherentPoint {p : t} {s : Set t} : AdherentPoint p s →
   · left
     assumption
   · right
-    intro r
-    obtain ⟨q, _, q_in_s⟩ := h r
+    intro r hr
+    obtain ⟨q, _, q_in_s⟩ := h r hr
     have : q ≠ p := by
       apply ne_of_mem_of_not_mem q_in_s
       assumption
