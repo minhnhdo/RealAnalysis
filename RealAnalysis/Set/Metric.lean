@@ -151,3 +151,22 @@ theorem AdherentPoint_of_closure_of_AdherentPoint {p : t} {s : Set t}
 theorem AdherentPoint_of_closure_iff_AdherentPoint {p : t} {s : Set t}
   : AdherentPoint p s.closure ↔ AdherentPoint p s :=
     Iff.intro AdherentPoint_of_AdherentPoint_of_closure AdherentPoint_of_closure_of_AdherentPoint
+
+theorem mem_closure_of_AdherentPoint {p : t} {s : Set t} : AdherentPoint p s → p ∈ s.closure := by
+  intro h
+  by_cases p ∈ s
+  · left
+    assumption
+  · right
+    intro r
+    obtain ⟨q, _, q_in_s⟩ := h r
+    have : q ≠ p := by
+      apply ne_of_mem_of_not_mem q_in_s
+      assumption
+    use q
+
+theorem Set.closure_isClosed {s : Set t} : s.closure.IsClosed := by
+  intro _ _
+  apply mem_closure_of_AdherentPoint
+  apply AdherentPoint_of_LimitPoint_of_closure
+  assumption
