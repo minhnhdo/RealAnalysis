@@ -216,3 +216,18 @@ theorem Set.closure_isClosed {s : Set t} : s.closure.IsClosed := by
   apply mem_closure_of_AdherentPoint
   apply AdherentPoint_of_LimitPoint_of_closure
   assumption
+
+theorem Set.IsClosed_iff {s : Set t} : s.IsClosed ↔ s = s.closure := by
+  constructor
+  · intro h
+    apply subset_antisymm
+    · exact Set.subset_closure
+    · intro p h
+      cases h with
+      | inl =>
+        assumption
+      | inr h_limit_point =>
+        exact h p h_limit_point
+  · intro h
+    rw [h]
+    exact Set.closure_isClosed
