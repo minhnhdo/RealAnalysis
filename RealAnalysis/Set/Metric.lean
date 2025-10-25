@@ -142,7 +142,7 @@ theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isCl
 def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
 
 theorem Set.subset_closure {s : Set t} : s ⊆ s.closure := by
-  intro p h
+  intro _ _
   left
   assumption
 
