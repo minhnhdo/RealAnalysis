@@ -141,6 +141,11 @@ theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isCl
 
 def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
 
+theorem Set.subset_closure {s : Set t} : s ⊆ s.closure := by
+  intro p h
+  left
+  assumption
+
 theorem AdherentPoint_of_AdherentPoint_of_closure {p : t} {s : Set t}
   : AdherentPoint p s.closure → AdherentPoint p s := by
     intro h r hr
