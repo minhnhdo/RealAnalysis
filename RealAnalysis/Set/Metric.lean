@@ -84,16 +84,16 @@ def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r > 0, ball p r ⊆ s
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, InteriorPoint p s
 
-theorem empty_isOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
+theorem empty_IsOpen : (∅ : Set t).IsOpen := by simp [Set.IsOpen]
 
-theorem univ_isOpen : (Set.univ : Set t).IsOpen := by
+theorem univ_IsOpen : (Set.univ : Set t).IsOpen := by
   intro p h
   constructor
   · assumption
   · use 1
     simp
 
-theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
+theorem ball_IsOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
   simp [Set.IsOpen, ball, InteriorPoint]
   intros b hab
   constructor
@@ -110,15 +110,15 @@ theorem ball_isOpen {a : t} {r : ℝ} : (ball a r).IsOpen := by
 
 def Set.IsClosed (s : Set t) : Prop := ∀ p, LimitPoint p s → p ∈ s
 
-theorem empty_isClosed : (∅ : Set t).IsClosed := by
+theorem empty_IsClosed : (∅ : Set t).IsClosed := by
   intro p h
   obtain ⟨q, _, _, mem_empty⟩:= h 1 one_pos
   rw [Set.mem_empty_iff_false] at mem_empty
   contradiction
 
-theorem univ_isClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
+theorem univ_IsClosed : (Set.univ : Set t).IsClosed := by simp [Set.IsClosed]
 
-theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
+theorem closedBall_IsClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
   intro b h
   by_cases hr : dist a b ≤ r
   · assumption
@@ -135,9 +135,9 @@ theorem closedBall_isClosed {a : t} {r : ℝ} : (closedBall a r).IsClosed := by
 
 def Set.IsClopen (s : Set t) : Prop := s.IsOpen ∧ s.IsClosed
 
-theorem empty_isClopen : (∅ : Set t).IsClopen := ⟨empty_isOpen, empty_isClosed⟩
+theorem empty_IsClopen : (∅ : Set t).IsClopen := ⟨empty_IsOpen, empty_IsClosed⟩
 
-theorem univ_isClopen : (Set.univ : Set t).IsClopen := ⟨univ_isOpen, univ_isClosed⟩
+theorem univ_IsClopen : (Set.univ : Set t).IsClopen := ⟨univ_IsOpen, univ_IsClosed⟩
 
 def Set.closure (s : Set t) : Set t := s ∪ {p | LimitPoint p s}
 
@@ -152,7 +152,7 @@ theorem AdherentPoint_of_AdherentPoint_of_closure {p : t} {s : Set t}
     | inl =>
       use a
     | inr a_is_limit_point =>
-      obtain ⟨_, b, hb, ball'_subset_ball⟩ := ball_isOpen a a_in_ball
+      obtain ⟨_, b, hb, ball'_subset_ball⟩ := ball_IsOpen a a_in_ball
       obtain ⟨c, c_in_ball', _, _⟩ := a_is_limit_point b hb
       have := Set.mem_of_mem_of_subset c_in_ball' ball'_subset_ball
       use c
@@ -209,7 +209,7 @@ theorem points_of_closure {s : Set t} : {p | AdherentPoint p s} = s.closure := b
   · intro
     exact AdherentPoint_of_mem_closure
 
-theorem Set.closure_isClosed {s : Set t} : s.closure.IsClosed := by
+theorem Set.closure_IsClosed {s : Set t} : s.closure.IsClosed := by
   intro _ _
   apply mem_closure_of_AdherentPoint
   apply AdherentPoint_of_LimitPoint_of_closure
@@ -228,4 +228,4 @@ theorem Set.IsClosed_iff {s : Set t} : s.IsClosed ↔ s = s.closure := by
         exact h p h_limit_point
   · intro h
     rw [h]
-    exact Set.closure_isClosed
+    exact Set.closure_IsClosed
