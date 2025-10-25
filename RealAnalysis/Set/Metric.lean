@@ -69,18 +69,25 @@ theorem nonempty_closedBall {p : t} {r : ℝ} : (closedBall p r).Nonempty ↔ 0 
 theorem closedBall_empty {r : ℝ} {p : t} : closedBall p r = ∅ ↔ r < 0 := by
   rw [← Set.not_nonempty_iff_eq_empty, nonempty_closedBall, not_le]
 
-def AdherentPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ∈ s
+def AdherentPoint (p : t) (s : Set t) : Prop := ∀ r > 0, ∃ q ∈ ball p r, q ∈ s
 
-def LimitPoint (p : t) (s : Set t) := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
+def LimitPoint (p : t) (s : Set t) : Prop := ∀ r > 0, ∃ q ∈ ball p r, q ≠ p ∧ q ∈ s
 
 theorem AdherentPoint_of_LimitPoint {p : t} {s : Set t} : LimitPoint p s → AdherentPoint p s := by
   intro h r hr
   obtain ⟨q, _, _, _⟩ := h r hr
   use q
 
-def IsolatedPoint (p : t) (s : Set t) := p ∈ s ∧ ¬LimitPoint p s
+theorem LimitPoint_of_subset {p : t} {s₁ s₂ : Set t}
+  : s₁ ⊆ s₂ → LimitPoint p s₁ → LimitPoint p s₂ := by
+    intro h_subset h_LimitPoint_s₁ r hr
+    obtain ⟨q, _, _, q_in_s₁⟩ := h_LimitPoint_s₁ r hr
+    have : q ∈ s₂ := h_subset q_in_s₁
+    use q
 
-def InteriorPoint (p : t) (s : Set t) := p ∈ s ∧ ∃ r > 0, ball p r ⊆ s
+def IsolatedPoint (p : t) (s : Set t) : Prop := p ∈ s ∧ ¬LimitPoint p s
+
+def InteriorPoint (p : t) (s : Set t) : Prop := p ∈ s ∧ ∃ r > 0, ball p r ⊆ s
 
 def Set.IsOpen (s : Set t) : Prop := ∀ p ∈ s, InteriorPoint p s
 
@@ -229,3 +236,14 @@ theorem Set.IsClosed_iff {s : Set t} : s.IsClosed ↔ s = s.closure := by
   · intro h
     rw [h]
     exact Set.closure_IsClosed
+
+theorem Set.subset_of_IsClosed {s₁ s₂ : Set t} : s₁ ⊆ s₂ → s₂.IsClosed → s₁.closure ⊆ s₂ := by
+  intro h_subset h_s₂_IsClosed p hp
+  cases hp with
+  | inl =>
+    apply h_subset
+    assumption
+  | inr h_LimitPoint_s₁ =>
+    apply h_s₂_IsClosed
+    apply LimitPoint_of_subset h_subset
+    assumption
