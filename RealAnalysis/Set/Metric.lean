@@ -248,7 +248,7 @@ theorem Set.subset_of_IsClosed {s₁ s₂ : Set t} : s₁ ⊆ s₂ → s₂.IsCl
     apply LimitPoint_of_subset h_subset
     assumption
 
-theorem Set.compl_IsClosed {s : Set t} : s.IsOpen → sᶜ.IsClosed := by
+theorem Set.compl_IsClosed_of_IsOpen {s : Set t} : s.IsOpen → sᶜ.IsClosed := by
   intro h_open a ha
   by_contra h_mem
   have : ¬LimitPoint a sᶜ := by
