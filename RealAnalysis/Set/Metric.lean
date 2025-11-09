@@ -247,3 +247,15 @@ theorem Set.subset_of_IsClosed {s₁ s₂ : Set t} : s₁ ⊆ s₂ → s₂.IsCl
     apply h_s₂_IsClosed
     apply LimitPoint_of_subset h_subset
     assumption
+
+theorem Set.compl_IsClosed {s : Set t} : s.IsOpen → sᶜ.IsClosed := by
+  intro h_open a ha
+  by_contra h_mem
+  have : ¬LimitPoint a sᶜ := by
+    simp at h_mem
+    by_contra h_b_LimitPoint
+    obtain ⟨_, r, r_pos, r_ball⟩ := h_open a h_mem
+    obtain ⟨c, c_ball, _, c_in_compl⟩ := h_b_LimitPoint r r_pos
+    have : c ∈ s := r_ball c_ball
+    contradiction
+  contradiction
