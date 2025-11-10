@@ -253,9 +253,9 @@ theorem Set.compl_IsClosed_of_IsOpen {s : Set t} : s.IsOpen → sᶜ.IsClosed :=
   by_contra h_mem
   have : ¬LimitPoint a sᶜ := by
     simp at h_mem
-    by_contra h_b_LimitPoint
+    by_contra h_LimitPoint
     obtain ⟨_, r, r_pos, r_ball⟩ := h_open a h_mem
-    obtain ⟨c, c_ball, _, c_in_compl⟩ := h_b_LimitPoint r r_pos
-    have : c ∈ s := r_ball c_ball
+    obtain ⟨b, b_ball, _, b_in_bompl⟩ := h_LimitPoint r r_pos
+    have : b ∈ s := r_ball b_ball
     contradiction
   contradiction
