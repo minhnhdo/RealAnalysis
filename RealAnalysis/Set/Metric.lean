@@ -259,3 +259,24 @@ theorem Set.compl_IsClosed_of_IsOpen {s : Set t} : s.IsOpen → sᶜ.IsClosed :=
     have : b ∈ s := r_ball b_ball
     contradiction
   contradiction
+
+theorem Set.IsOpen_of_compl_IsClosed {s : Set t} : sᶜ.IsClosed → s.IsOpen := by
+  intro h_closed a h_mem
+  constructor
+  · assumption
+  · have h : ¬LimitPoint a sᶜ := by
+      by_contra h_LimitPoint
+      have := h_closed a h_LimitPoint
+      contradiction
+    simp [LimitPoint] at h
+    obtain ⟨r, h_pos, hr⟩ := h
+    have : ball a r ⊆ s := by
+      intro p hp
+      by_cases hpa : p = a
+      · rw [hpa]
+        assumption
+      · exact hr p hp hpa
+    use r
+
+theorem Set.IsOpen_iff_compl_IsClosed {s : Set t} : s.IsOpen ↔ sᶜ.IsClosed :=
+  ⟨Set.compl_IsClosed_of_IsOpen, Set.IsOpen_of_compl_IsClosed⟩
