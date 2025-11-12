@@ -280,3 +280,28 @@ theorem Set.IsOpen_of_compl_IsClosed {s : Set t} : sᶜ.IsClosed → s.IsOpen :=
 
 theorem Set.IsOpen_iff_compl_IsClosed {s : Set t} : s.IsOpen ↔ sᶜ.IsClosed :=
   ⟨Set.compl_IsClosed_of_IsOpen, Set.IsOpen_of_compl_IsClosed⟩
+
+def Set.IsDense (s : Set t) : Prop := ∀p, LimitPoint p s ∨ p ∈ s
+
+theorem Set.IsDense_iff {s : Set t} : s.IsDense ↔ s.closure = Set.univ := by
+  constructor
+  · intro h_dense
+    rw [← univ_subset_iff]
+    intro a _
+    simp [Set.closure]
+    cases h_dense a with
+    | inl =>
+      right
+      assumption
+    | inr =>
+      left
+      assumption
+  · intro h _
+    rw [← univ_subset_iff] at h
+    cases h (by simp) with
+    | inl =>
+      right
+      assumption
+    | inr =>
+      left
+      assumption
